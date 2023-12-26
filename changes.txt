@@ -1,0 +1,133 @@
+Ver 2.0.2
+	-padlock to lock unlock the ConROC UI added to the bottom left of the Spellmenu
+	-Reworked sections of helper.lua
+	-Added new icons for roles in core.lua
+	-Started to add support for translations.
+Ver 2.0.1
+	-Added the need to press Alt to move the Spellmenu and its button
+	-Updated tooltips to anchor at cursor
+
+Ver 2.0.0
+	-Added more function to spellmenu and ability to hide. Still shows on Mouseover.
+
+Ver 1.13.34
+	-Tweaked Cooldown swirl a little.
+
+Ver 1.13.33
+	-Finally figured out a way to add the Rank to the spell it's yelling at to put on your bar. This will help with down ranking if and when I try to add in.
+
+Ver 1.13.32
+	-Fix for elite strength mob detection.
+	-More CD swirl fixes, now for channel spells.
+
+Ver 1.13.31
+	-Tweaked CD swirl coding, so that it shows when you stop casting early.
+
+Ver 1.13.30
+	-Unlocked Mage Spellmenu.
+	
+Ver 1.13.29
+	-Unlocked Priest Spellmenu.
+
+Ver 1.13.28
+	-Unlocked Rogue Spellmenu.
+
+Ver 1.13.27
+	-Fixed AoE toggle showing for classes that it shouldnt.
+
+Ver 1.13.26
+	-Adjusted AoE toggle with Hunter class option.
+
+Ver 1.13.25
+	-Unlocked Warlock Spellmenu.
+	-Adjusted RaidMob
+
+Ver 1.13.24
+	-Added window hide with Healer Role checkbox.
+	-Made some for Bartender4 Macro support.
+
+Ver 1.13.23
+	-Fixed Bartender4 support some more.
+
+Ver 1.13.22
+	-Tweak on Mover show/hide.
+	-Fixed Bartender4 support.
+	-Fixed AzeriteUI_Classic support. (You will need to adjust the icon size in interface menu.)
+
+Ver 1.13.21
+	-Unlocked Hunter Spellmenu.
+
+Ver 1.13.20
+	-Single/AoE toggle work.
+
+Ver 1.13.19
+	-Updated Hostile Target system to include dead targets.
+	-Small fix for unlock setting.
+	
+Ver 1.13.18
+	-QoL for Spellmenu Mover.
+	-Added Warrior to Spellmenu load.
+
+Ver 1.13.17
+	-Trying to add in locales for creaturetypes. Take 2
+	
+Ver 1.13.16
+	-Trying to add in locales for creaturetypes.
+
+Ver 1.13.15
+	-Fixing some code for different locales.
+
+Ver 1.13.14
+	-Added Update buttons on shapeshift change to hopefully fix stance bar issues. Take 2.
+
+Ver 1.13.13
+	-Added Update buttons on shapeshift change to hopefully fix stance bar issues.
+
+Ver 1.13.12
+	-QoL
+
+Ver 1.13.11
+	-Spellmenu feature work.
+
+Ver 1.13.10
+	-Remove role toggle button, going a different route.
+
+Ver 1.13.9
+	-Added function to check creature type.
+	-Added function for checking mob classification. Better able to tell difference between normal or trivial mobs and harder to solo/kill mobs.
+	-Added configuration optiont to hide spellname, keybind and background (When Locked) of Display window.
+
+Ver 1.13.8
+	-Updated spell missing error.
+	-Changed spell background.
+
+Ver 1.13.7
+	-Gave Defense rotation access to Stancebar.
+	-Started work on SpellMenu.
+
+Ver 1.13.6
+	-Talent function work.
+
+Ver 1.13.5
+	-Unattached Defense Window from Damage window.
+	
+Ver 1.13.4
+	-Removed extra transparency from Display window. So you can make it fully opaque now if you like.
+	-Blizzard sucks. Cannot see duration of target buff or debuffs.
+
+Ver 1.13.3
+	-Added Equipped Function for abilities.
+
+Ver 1.13.2
+	-Fixed issue with sticky notifiers.
+	-Fixed Hunter and Warlock pet functions.
+
+Ver 1.13.1
+	-Swapped out the old toggle system for new Damage/Tank/Heals toggles.
+	-Added Classic Talent support.
+	-Added Ranking support for auto switching while leveling.
+
+Ver 1.13.0
+	-Initial release for Classic WoW.
+	-Removed PvPTalent framework.
+	-Removed Azerite Trait and Essence framework.
