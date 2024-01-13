@@ -1,4 +1,8 @@
-Ver 2.0.2
+ver 1.15.1
+	-Fixed the unlock error that prevented the single/aoe button to be moved
+	-In the ConROC Options: Added Nameplate settings for when forcing the nameplates to be visible in combat.
+Ver 1.15.0
+	-Updated version number to match gameversion
 	-padlock to lock unlock the ConROC UI added to the bottom left of the Spellmenu
 	-Reworked sections of helper.lua
 	-Added new icons for roles in core.lua

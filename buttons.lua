@@ -148,13 +148,12 @@ function ConROC:SlashUnlock()
 	ConROCDefenseWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 	ConROCPurgeWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 
-	if val == true and ConROC.db.profile.enablePurgeWindow == true then
+	if ConROC.db.profile.unlockWindow == true and ConROC.db.profile.enablePurgeWindow == true then
 		ConROCPurgeWindow:Show();
 	else
 		ConROCPurgeWindow:Hide();
 	end
-
-	if val == true or ConROC.db.profile.enableWindowBackground then
+	if ConROC.db.profile.unlockWindow == true or ConROC.db.profile.enableWindowBackground then
 		ConROCWindow.texture:Show();
 		ConROCDefenseWindow.texture:Show();
 	else
@@ -164,7 +163,7 @@ function ConROC:SlashUnlock()
 
 	if ConROCSpellmenuMover ~= nil then
 		ConROCSpellmenuMover:EnableMouse(ConROC.db.profile.unlockWindow);
-		if val == true then
+		if ConROC.db.profile.unlockWindow == true then
 			ConROCSpellmenuMover:Show();
 		else
 			ConROCSpellmenuMover:Hide();
@@ -173,7 +172,7 @@ function ConROC:SlashUnlock()
 
 	if ConROCToggleMover ~= nil then
 		ConROCToggleMover:EnableMouse(ConROC.db.profile.unlockWindow);
-		if val == true then
+		if ConROC.db.profile.unlockWindow == true then
 			ConROCToggleMover:Show();
 		else
 			ConROCToggleMover:Hide();

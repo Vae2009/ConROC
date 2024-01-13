@@ -102,6 +102,10 @@ local defaultOptions = {
 		raidbuffsOverlayColor = {r = 0,g = 0.6,b = 0, a = 1},
 		tauntOverlayColor = {r = 0.8,g = 0,b = 0, a = 1},
 		movementOverlayColor = {r = 0.2,g = 0.9,b = 0.2, a = 1},
+		nameplateSelectedAlpha = tonumber(GetCVarDefault("nameplateSelectedAlpha")),
+		nameplateNotSelectedAlpha = tonumber(GetCVarDefault("nameplateNotSelectedAlpha")),
+		nameplatesMinAlpha = tonumber(GetCVarDefault("nameplateMinAlpha")),
+		nameplatesMaxAlpha = tonumber(GetCVarDefault("nameplateMaxAlpha")),
 	}
 }	
 
@@ -615,18 +619,97 @@ local options = {
 			end,
 			get = function(info) return ConROC.db.profile.enablePurgeWindow end
 		},
-		spacer52 = {
+		spacer53 = {
 			order = 53,
 			type = "description",
 			width = "double",
 			name = "\n\n",
-		},		
+		},
+		nameplates = {
+			type = 'header',
+			name = 'Nameplate Settings',
+			order = 60,
+		},
+		nameplateInfo = {
+			order = 61,
+			type = "description",
+			--width = "double",
+			name = "To check the number of mobs within range, nameplates must be enabled. If they are disabled when entering combat, ConROC will temporarily turn them on with the specified settings.\nREQUIRES RELOAD for changes to apply\n\n",
+			fontSize = "medium",
+		},
+		nameplateSelectedAlpha = {
+			name = 'Target Alpha',
+			desc = 'The nameplate transparency of your target. REQUIRES RELOAD to update\nBlizzard default: 1',
+			type = 'range',
+			width = 'normal',
+			order = 62,
+			min = 0,
+			max = 1,
+			step = 0.1,
+			set = function(info, val)
+				ConROC.db.profile.nameplateSelectedAlpha = val;
+			end,
+			get = function(info) return ConROC.db.profile.nameplateSelectedAlpha end
+		},
+		nameplateNotSelectedAlpha = {
+			name = 'Not targeted Alpha',
+			desc = 'The nameplate transparency of NOT your target. REQUIRES RELOAD to update\nBlizzard default: 0.5',
+			type = 'range',
+			width = 'normal',
+			order = 63,
+			min = 0,
+			max = 1,
+			step = 0.1,
+			set = function(info, val)
+				ConROC.db.profile.nameplateNotSelectedAlpha = val;
+			end,
+			get = function(info) return ConROC.db.profile.nameplateNotSelectedAlpha end
+		},
+		--[[nameplatesMinAlpha = {
+			name = 'Min Alpha',
+			desc = 'Min transparency of nameplates for units that are not currently targeted.\nBlizzard default: 0.8',
+			type = 'range',
+			width = 'normal',
+			order = 64,
+			min = 0,
+			max = 1,
+			step = 0.1,
+			set = function(info, val)
+				ConROC.db.profile.nameplatesMinAlpha = val;
+			end,
+			get = function(info) return ConROC.db.profile.nameplatesMinAlpha end
+		},
+		nameplatesMaxAlpha = {
+			name = 'Max Alpha',
+			desc = 'Max transparency of nameplates for units that are not currently targeted.\nBlizzard default: 1',
+			type = 'range',
+			width = 'normal',
+			order = 65,
+			min = 0,
+			max = 1,
+			step = 0.1,
+			set = function(info, val)
+				ConROC.db.profile.nameplatesMaxAlpha = val;
+			end,
+			get = function(info) return ConROC.db.profile.nameplatesMaxAlpha end
+		},]]
+		spacer64 = {
+			order = 66,
+			type = "description",
+			width = "double",
+			name = "\n\n",
+		},
+		resetHeadline = {
+			type = 'header',
+			name = 'Reset Settings',
+			order = 70,
+		},
 		resetExtraWindows = {
 			name = 'Reset Positions',
 			desc = ('Back to Default. RELOAD REQUIRED'),
 			type = 'execute',
 			width = 'default',
-			order = 54,
+			order = 71,
 			confirm = true,			
 			func = function(info)
 				ConROC.db.profile.unlockWindow = false;
@@ -634,12 +717,18 @@ local options = {
 				ReloadUI();
 			end
 		},
+		spacer72 = {
+			order = 72,
+			type = "description",
+			width = "default",
+			name = "\n\n",
+		},
 		resetButton = {
 			name = 'Reset Settings',
 			desc = 'Resets options back to default. RELOAD REQUIRED',
 			type = 'execute',
-			width = 'full',
-			order = 61,
+			width = 'default',
+			order = 73,
 			confirm = true,
 			func = function(info)
 				ConROC.db:ResetProfile();
@@ -647,6 +736,12 @@ local options = {
 				ConROCPurgeWindow:SetPoint("LEFT", "ConROCWindow", "RIGHT", 5, 0);				
 				ReloadUI();
 			end
+		},
+		spacer80 = {
+			order = 80,
+			type = "description",
+			width = "double",
+			name = "\n\n",
 		},
 	},
 }
