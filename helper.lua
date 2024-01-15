@@ -14,9 +14,10 @@ function ConROC:TalentChosen(spec, talent)
 	return false, 0, 0;
 end
 
-function ConROC:currentSpec()
+function ConROC:currentSpec(ID)
     local numTabs  = GetNumTalentTabs()
     local currentSpecName
+    local CurrentSpecID
     local maxPoints = 0
     for tab = 1, numTabs do
         local numTalents = GetNumTalents(tab)
@@ -30,10 +31,14 @@ function ConROC:currentSpec()
         if pointsSpent > maxPoints then
             maxPoints = pointsSpent
             currentSpecName = GetTalentTabInfo(tab)
+            CurrentSpecID = tab
         end
     end
-
-    return currentSpecName
+    if ID then
+    	return CurrentSpecID
+    else
+	    return currentSpecName
+	end
 end
 
 function ConROC:SpecTally()

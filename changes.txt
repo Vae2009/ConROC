@@ -1,3 +1,5 @@
+ver 1.15.2
+	-Added button in the options to reset the saved class settings for the current logged character
 ver 1.15.1
 	-Fixed the unlock error that prevented the single/aoe button to be moved
 	-In the ConROC Options: Added Nameplate settings for when forcing the nameplates to be visible in combat.

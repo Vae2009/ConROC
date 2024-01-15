@@ -112,8 +112,38 @@ local defaultOptions = {
 local orientations = {
 		"Vertical",
 		"Horizontal",
-}
-
+}--[[
+function ConROC:resetClass(classname)
+	local addonName = "ConROC_" .. classname
+	local variableName = "ConROC" .. classname .. "Spells"
+	if IsAddOnLoaded(addonName) then
+	    -- Reset the saved variable within the addon
+	    if _G[variableName] then
+	       _G[variableName] = nil
+	       _G[variableName] = {}  -- Optional: Set it to an empty table if necessary
+	        print("Saved variable " .. variableName .. " for " .. classname .. " has been reset.")
+	    else
+	        print("Error: " .. variableName .. " not found in " .. addonName .. ".")
+	    end
+	else
+	    print("Error: " .. addonName .. " addon not found.")
+	end
+end]]
+function ConROC:resetClass(classname)
+    local addonName = "ConROC_" .. classname
+	local variableName = "ConROC" .. classname .. "Spells"
+	if IsAddOnLoaded(addonName) then
+	    -- Reset the saved variable within the addon
+	    if _G[variableName] then
+	       _G[variableName] = nil
+    		print("Saved Class Settings for " .. classname .. " has been reset.")
+		else
+	        print("Error: " .. variableName .. " not found in " .. addonName .. ".")
+	    end
+	else
+	    print("Error: " .. addonName .. " addon not found.")
+	end
+end
 local _, _, classIdv = UnitClass('player');
 local cversion = GetAddOnMetadata('ConROC_' .. ConROC.Classes[classIdv], 'Version');
 local classinfo = " ";
@@ -121,7 +151,7 @@ local classinfo = " ";
 	if cversion ~= nil then
 		classinfo = ConROC.Classes[classIdv] .. ': Ver ' .. cversion;
 	end
-
+print("ConROC.Classes[classIdv]",ConROC.Classes[classIdv])
 local options = {
 	type = 'group',
 	name = '-= |cffFFFFFFConROC  (Conflict Rotation Optimizer Classic)|r =-',
@@ -144,7 +174,18 @@ local options = {
 			type = "description",
 			width = "full",
 			name = classinfo,
-		},		
+		},
+		resetClassButton = {
+			name = 'Reset '.. ConROC.Classes[classIdv] .. ' Class variables',
+			desc = 'Reloads UI after reseting the '.. ConROC.Classes[classIdv] .. ' settings.',
+			type = 'execute',
+			width = 'full',
+			order = 3.5,
+			func = function(info)
+				ConROC:resetClass(ConROC.Classes[classIdv]);
+				ReloadUI();
+			end
+		},
 		spacer4 = {
 			order = 4,
 			type = "description",
@@ -932,6 +973,7 @@ function ConROC:PLAYER_CONTROL_LOST()
 --	self:Print(self.Colors.Success .. 'Lost Control!');
 		self:DisableRotation();
 		self:DisableDefense();
+		ConROCSpellmenuFrame_LockButton:Hide();
 end
 
 function ConROC:PLAYER_CONTROL_GAINED()
@@ -939,6 +981,7 @@ function ConROC:PLAYER_CONTROL_GAINED()
 		self:DisableDefense();
 		self:EnableRotation();
 		self:EnableDefense();
+		ConROCSpellmenuFrame_LockButton:Show();
 end
 
 function ConROC:PLAYER_ENTERING_WORLD()
