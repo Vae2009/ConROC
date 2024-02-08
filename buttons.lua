@@ -146,8 +146,14 @@ function ConROC:SlashUnlock()
 	end
 	ConROCWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 	ConROCDefenseWindow:EnableMouse(ConROC.db.profile.unlockWindow);
+	ConROCInterruptWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 	ConROCPurgeWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 
+	if ConROC.db.profile.unlockWindow == true and ConROC.db.profile.enableInterruptWindow == true then
+		ConROCInterruptWindow:Show();
+	else
+		ConROCInterruptWindow:Hide();
+	end
 	if ConROC.db.profile.unlockWindow == true and ConROC.db.profile.enablePurgeWindow == true then
 		ConROCPurgeWindow:Show();
 	else
@@ -858,11 +864,11 @@ function ConROC:SpellmenuFrame()
 			optionsOpened = false;
 		end)
 
-	local lockButton = CreateFrame("Button", 'ConROCSpellmenuFrame_LockButton', nil)
+	local lockButton = CreateFrame("Button", 'ConROCSpellmenuFrame_LockButton', frame)
     lockButton:SetFrameStrata('MEDIUM')
     lockButton:SetFrameLevel('6')
-    lockButton:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", -2, 5)
-    lockButton:SetSize(10, 10)
+    lockButton:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", -5, 11)
+    lockButton:SetSize(18, 18)
     lockButton:SetAlpha(0.5)
 
     local lockTexture = lockButton:CreateTexture(nil, "OVERLAY")

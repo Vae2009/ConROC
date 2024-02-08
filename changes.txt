@@ -1,3 +1,6 @@
+ver 1.15.3
+	-Support for interupts added
+	-Spellmenu update on spell and runespells learned re-coded
 ver 1.15.2
 	-Added button in the options to reset the saved class settings for the current logged character
 ver 1.15.1

@@ -78,6 +78,7 @@ local defaultOptions = {
 		disabledInfo = false,
 		enableWindow = true,
 		enableDefenseWindow = false,
+		enableInterruptWindow = false,
 		enablePurgeWindow = false,
 		combatWindow = false,
 		enableWindowCooldown = true,
@@ -98,6 +99,7 @@ local defaultOptions = {
 		damageOverlayColor = {r = 0.8,g = 0.8,b = 0.8,a = 1},
 		cooldownOverlayColor = {r = 1,g = 0.6,b = 0,a = 1},
 		defenseOverlayColor = {r = 0,g = 0.7,b = 1,a = 1},
+		interruptOverlayColor = {r = 1,g = 1,b = 1,a = 1},
 		purgeOverlayColor = {r = 0.6,g = 0,b = .9,a = 1},
 		raidbuffsOverlayColor = {r = 0,g = 0.6,b = 0, a = 1},
 		tauntOverlayColor = {r = 0.8,g = 0,b = 0, a = 1},
@@ -112,7 +114,9 @@ local defaultOptions = {
 local orientations = {
 		"Vertical",
 		"Horizontal",
-}--[[
+}
+ConROC.SpellsChanged = false;
+--[[
 function ConROC:resetClass(classname)
 	local addonName = "ConROC_" .. classname
 	local variableName = "ConROC" .. classname .. "Spells"
@@ -234,8 +238,14 @@ local options = {
 				ConROC.db.profile.unlockWindow = val;
 				ConROCWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 				ConROCDefenseWindow:EnableMouse(ConROC.db.profile.unlockWindow);
+				ConROCInterruptWindow:EnableMouse(ConRO.db.profile.unlockWindow);
 				ConROCPurgeWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 				
+				if val == true and ConROC.db.profile.enableInterruptWindow == true then
+					ConROCInterruptWindow:Show();
+				else
+					ConROCInterruptWindow:Hide();
+				end
 				if val == true and ConROC.db.profile.enablePurgeWindow == true then
 					ConROCPurgeWindow:Show();					
 				else
@@ -644,6 +654,22 @@ local options = {
 			end,
 			get = function(info) return ConROC.db.profile.enableDefenseWindow end
 		},
+		enableInterruptWindow = {
+			name = 'Enable Interrupt Icon',
+			desc = 'Show movable interrupt icon.',
+			type = 'toggle',
+			width = 'default',
+			order = 51.5,
+			set = function(info, val)
+				ConROC.db.profile.enableInterruptWindow = val;
+				if val == true then
+					ConROCInterruptWindow:Show();
+				else
+					ConROCInterruptWindow:Hide();
+				end
+			end,
+			get = function(info) return ConROC.db.profile.enableInterruptWindow end
+		},
 		enablePurgeWindow = {
 			name = 'Enable Purge Window',
 			desc = 'Show movable interrupt window.',
@@ -808,6 +834,7 @@ function ConROC:OnInitialize()
 	self:DisplayToggleFrame();
 	self.DisplayWindowFrame();
 	self.DefenseWindowFrame();
+	self.InterruptWindowFrame();
 	self.PurgeWindowFrame();
 	
 	ConROCToggleMover:Hide();
@@ -938,6 +965,8 @@ function ConROC:OnEnable()
 	self:RegisterEvent('ACTIONBAR_HIDEGRID');
 	self:RegisterEvent('ACTIONBAR_PAGE_CHANGED');
 	self:RegisterEvent('LEARNED_SPELL_IN_TAB');
+	self:RegisterEvent('SPELLS_CHANGED');
+
 	self:RegisterEvent('CHARACTER_POINTS_CHANGED');
 	self:RegisterEvent('UPDATE_MACROS');
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
@@ -973,7 +1002,6 @@ function ConROC:PLAYER_CONTROL_LOST()
 --	self:Print(self.Colors.Success .. 'Lost Control!');
 		self:DisableRotation();
 		self:DisableDefense();
-		ConROCSpellmenuFrame_LockButton:Hide();
 end
 
 function ConROC:PLAYER_CONTROL_GAINED()
@@ -981,7 +1009,6 @@ function ConROC:PLAYER_CONTROL_GAINED()
 		self:DisableDefense();
 		self:EnableRotation();
 		self:EnableDefense();
-		ConROCSpellmenuFrame_LockButton:Show();
 end
 
 function ConROC:PLAYER_ENTERING_WORLD()
@@ -1032,15 +1059,26 @@ function ConROC:PLAYER_REGEN_DISABLED()
 		self:EnableDefense();
 	end
 end
-
+function ConROC:SPELLS_CHANGED()
+	if ConROC.SpellsChanged and ConROC.Seasons.IsSoD then
+		--print("Spell Changed", ConROC.Seasons.IsSoD)
+		ConROC:CR_SPELLS_LEARNED()
+	end
+	ConROC.SpellsChanged = true;
+end
 function ConROC:LEARNED_SPELL_IN_TAB()
+	--print("Spell learned")
+	if not ConROC.Seasons.IsSoD then
+		ConROC:CR_SPELLS_LEARNED()
+	end
+end
+function ConROC:CR_SPELLS_LEARNED()
 	ConROC:UpdateSpellID();
 	ConROC:ButtonFetch();
-	C_Timer.After(3, function()
+	C_Timer.After(1, function()
 		ConROC:SpellMenuUpdate(true); -- new spell learned
 	end);
 end
-
 function ConROC:ButtonFetch()
 	C_Timer.After(1, function() 
 		if self.rotationEnabled then

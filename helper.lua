@@ -529,39 +529,14 @@ function ConROC:FindSpellInSpellbook(spellID)
 
 	return nil;
 end
---[[ -- Not working to find out if you are behind a target.
-function ConROC:IsBehindTarget()
-    local playerX, playerY = UnitPosition("player")
-    local targetX, targetY = UnitPosition("target")
 
-        local targetFacing = ObjectFacing("target")
-		print("targetFacing", targetFacing)
-    if playerX and playerY and targetX and targetY then
-        local playerFacing = GetPlayerFacing()
-        local dx = targetX - playerX
-        local dy = targetY - playerY
-        local angle = math.atan2(dy, dx)
-        local angleDifference = math.deg(math.abs(playerFacing - angle))
-        if angleDifference > 180 then
-            angleDifference = 360 - angleDifference
-        end
-
-        -- Define a threshold angle for "behind." Adjust this angle as needed.
-        local behindThreshold = 90
-
-        return angleDifference <= behindThreshold
-    else
-        return false
-    end
-end
---]]
 function ConROC:IsSpellInRange(spell, unit)
 	local unit = unit or 'target';
 	local range = false;
 	local spellName = GetSpellInfo(spell);
-	
+	--print(spellName)
 	local inRange = IsSpellInRange(spellName, unit);
-	
+	--print("inRange", inRange);
 	if inRange == 1 then
 		range = true;	
 	end
@@ -723,15 +698,16 @@ function ConROC:ItemCooldown(itemid, timeShift)
 	end;
 end
 
-function ConROC:Interrupt()
+--[[function ConROC:Interrupt()
 	local targetName = UnitName("target") -- Get the name of the target
     if not targetName then
         return false -- No target or invalid target
     end
 
-    local spellName, _, _, _, _, _, castEndTime, _, _, spellId = UnitCastingInfo("target")
+    local spellName, _, _, _, _, _, castEndTime, spellNotInterruptible, spellId = UnitCastingInfo("target")
     local channeledSpellName, _, _, _, _, _, channeledEndTime, _, _, channeledSpellId = UnitChannelInfo("target")
 
+    --print("spellName", spellName, spellId, spellNotInterruptible)
     if spellName then
         local isInterruptible = IsSpellInterruptible(spellId) -- Check if the spell is interruptible
         return isInterruptible
@@ -741,8 +717,8 @@ function ConROC:Interrupt()
     end
 
     return false
-end
---[[function ConROC:Interrupt()				--Classic Broke
+end]]
+function ConROC:Interrupt()				--Classic Broke
 	if UnitCanAttack ('player', 'target') then
 		local tarchan, _, _, _, _, _, cnotInterruptible = UnitChannelInfo("target");
 		local tarcast, _, _, _, _, _, _, notInterruptible = UnitCastingInfo("target");
@@ -755,7 +731,7 @@ end
 			return false;
 		end
 	end
-end]]
+end
 
 function ConROC:CallPet()
 	local petout = IsPetActive();
@@ -787,13 +763,29 @@ end
 function ConROC:Equipped(itemType, slotName)
 	local slotID = GetInventorySlotInfo(slotName);
 	local itemID = GetInventoryItemID("player", slotID);
-		if itemID ~= nil then
-			local _, _, _, _, _, _, equippedType = GetItemInfo(itemID);
-				if itemType == equippedType then
-					return true;
-				end
+	if itemID ~= nil then
+		local wpn, subType, _, _, _, _, typeID, subclassID = select(6,GetItemInfo(itemID));
+		
+		if itemType == "wpn" then
+			--print("wpn", wpn, "typeID", typeID)
+			if typeID == 2 then
+				return true;
+			end
+			return false;
 		end
-	return false;
+		if type(itemType) == "table" then
+			for _, id in ipairs(itemType) do
+				if id == subclassID then
+					return true
+				end
+			end
+		else
+			if itemType == subType or itemType == subclassID or itemType == wpn then
+				return true;
+			end
+		end
+		return false;
+	end
 end
 --[[function ConROC:TierPieces(tier, bonus) --function to check for Tire Piece bonuses
   local pieceCount = 0
