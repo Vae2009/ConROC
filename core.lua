@@ -10,6 +10,7 @@ BINDING_NAME_CONROCUNLOCK = "Lock/Unlock ConROC"
 
 ConROC = LibStub('AceAddon-3.0'):NewAddon('ConROC', 'AceConsole-3.0', 'AceEvent-3.0', 'AceTimer-3.0');
 
+ConROC.rc = LibStub("LibRangeCheck-3.0");
 ConROC.Textures = {
 	['Ping'] = 'Interface\\Cooldown\\ping4',
 	['Star'] = 'Interface\\Cooldown\\star4',

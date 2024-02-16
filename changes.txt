@@ -1,3 +1,5 @@
+ver 1.15.4
+	--Blizzard restricted the range check, so updated to use LibRangeCheck-3.0
 ver 1.15.3
 	-Support for interrupts added
 	-Spellmenu update on spell and runespells learned re-coded

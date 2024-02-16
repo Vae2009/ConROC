@@ -530,6 +530,20 @@ function ConROC:FindSpellInSpellbook(spellID)
 	return nil;
 end
 
+function ConROC:IsMeleeRange()
+	local minRange, maxRange = ConROC.rc:getRange("target");
+	if maxRange and self:TarHostile() then
+		--print("Max range: ", maxRange);
+		if tonumber(maxRange) <= 5 then
+			return true;
+		else
+			return false;
+		end
+	else
+		return false;
+	end
+end
+
 function ConROC:IsSpellInRange(spell, unit)
 	local unit = unit or 'target';
 	local range = false;
