@@ -132,7 +132,7 @@ local methods = {
 	end,
 
 	["LayoutFinished"] = function(self, width, height)
-		self.content:SetHeight(height or 0 + 20)
+		self.content:SetHeight(height or (0 + 20))
 
 		-- update the scrollframe
 		self:FixScroll()
@@ -205,6 +205,7 @@ local function Constructor()
 		type        = Type
 	}
 	for method, func in pairs(methods) do
+---@diagnostic disable-next-line: assign-type-mismatch
 		widget[method] = func
 	end
 	scrollframe.obj, scrollbar.obj = widget, widget

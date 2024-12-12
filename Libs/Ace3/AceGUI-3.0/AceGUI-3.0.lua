@@ -870,6 +870,7 @@ AceGUI:RegisterLayout("Table",
 		local t, laneH, laneV, rowspans, rowStart, colStart = unpack(layoutCache)
 
 		-- Create the grid
+---@diagnostic disable-next-line: unbalanced-assignments
 		local n, slotFound = 0
 		for i,child in ipairs(children) do
 			if child:IsShown() then

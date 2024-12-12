@@ -300,7 +300,7 @@ end
 
 function ConROC:UnitAura(spellID, timeShift, unit, filter, isWeapon)
 	timeShift = timeShift or 0;
-	local spellName = GetSpellInfo(spellId);
+	local spellName = GetSpellInfo(spellID);
 	local alreadyUp = false;
 
 	-- Handling weapon enchants
