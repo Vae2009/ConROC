@@ -478,7 +478,7 @@ local options = {
 			end,
 			get = function(info) return ConROC.db.profile.toggleButtonSize end
 		},
-		spacer21 = {
+		spacer36 = {
 			order = 36,
 			type = "description",
 			width = "normal",
@@ -829,25 +829,19 @@ function ConROC:GetTexture()
 end
 
 function ConROC:OnInitialize()
-	LibStub('AceConfig-3.0'):RegisterOptionsTable('ConROC', options, {'conroc'});
+	LibStub('AceConfig-3.0'):RegisterOptionsTable('Conflict Rotation Optimizer Classic Era', options, {'conroc'});
 	self.db = LibStub('AceDB-3.0'):New('ConROCPreferences', defaultOptions);
-	self.optionsFrame = LibStub('AceConfigDialog-3.0'):AddToBlizOptions('ConROC', 'ConROC');
+	self.optionsFrame = LibStub('AceConfigDialog-3.0'):AddToBlizOptions('Conflict Rotation Optimizer Classic Era', 'ConROC');
 	self:DisplayToggleFrame();
-	self.DisplayWindowFrame();
-	self.DefenseWindowFrame();
-	self.InterruptWindowFrame();
-	self.PurgeWindowFrame();
-	
+	self:DisplayWindowFrame();
+	self:DefenseWindowFrame();
+	self:InterruptWindowFrame();
+	self:PurgeWindowFrame();
+	self:SpellmenuFrame();
+
 	ConROCToggleMover:Hide();
 	ConROCButtonFrame:Hide();
-	
-	local _, _, Class = UnitClass("player")
-	if Class == 1 or Class == 2 or Class == 3 or Class == 4 or Class == 5 or Class == 6 or Class == 7 or Class == 8 or Class == 9 or Class == 11 then
-		self.SpellmenuFrame();	
-	end
-	
 
-	
 --[[[1] = 'Warrior',
 	[2] = 'Paladin',
 	[3] = 'Hunter',
@@ -860,7 +854,7 @@ function ConROC:OnInitialize()
 	[10] = 'Monk',
 	[11] = 'Druid',
 	[12] = 'DemonHunter',]]
-	
+
 end
 
 ConROC.DefaultPrint = ConROC.Print;
@@ -876,9 +870,9 @@ function ConROC:EnableRotation()
 		self:Print(self.Colors.Error .. 'Failed to enable addon!');
 		return;
 	end
-	
-	self.Fetch();
-	
+
+	self:Fetch();
+
 	if self.ModuleOnEnable then
 		self.ModuleOnEnable();
 	end
@@ -892,9 +886,9 @@ function ConROC:EnableDefense()
 		self:Print(self.Colors.Error .. 'Failed to enable defense module!');
 		return;
 	end
-	
-	self.FetchDef();
-	
+
+	self:FetchDef();
+
 	if self.ModuleOnEnable then
 		self.ModuleOnEnable();
 	end
@@ -918,15 +912,14 @@ function ConROC:DisableRotation()
 
 	self:DisableRotationTimer();
 
-					
 	self:DestroyDamageOverlays();
 	self:DestroyInterruptOverlays();
 	self:DestroyCoolDownOverlays();
 	self:DestroyPurgableOverlays();
 	self:DestroyRaidBuffsOverlays();
-	self:DestroyMovementOverlays();	
+	self:DestroyMovementOverlays();
 	self:DestroyTauntOverlays();
-	
+
 	self.Spell = nil;
 	self.rotationEnabled = false;
 end
@@ -939,7 +932,7 @@ function ConROC:DisableDefense()
 	self:DisableDefenseTimer();
 
 	self:DestroyDefenseOverlays();
-	
+
 	self.Def = nil;
 	self.defenseEnabled = false;
 end
@@ -962,25 +955,24 @@ function ConROC:OnEnable()
 	self:RegisterEvent('PLAYER_REGEN_DISABLED');
 	self:RegisterEvent('PLAYER_REGEN_ENABLED');	
 	self:RegisterEvent('PLAYER_ENTERING_WORLD');
+	self:RegisterEvent('PLAYER_LEAVING_WORLD');
 	self:RegisterEvent('UPDATE_SHAPESHIFT_FORM');
 	self:RegisterEvent('ACTIONBAR_HIDEGRID');
 	self:RegisterEvent('ACTIONBAR_PAGE_CHANGED');
-	self:RegisterEvent('LEARNED_SPELL_IN_TAB');
-	self:RegisterEvent('SPELLS_CHANGED');
 
 	self:RegisterEvent('CHARACTER_POINTS_CHANGED');
 	self:RegisterEvent('UPDATE_MACROS');
 	self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
 
 	self:RegisterEvent('PLAYER_CONTROL_LOST');
-	self:RegisterEvent('PLAYER_CONTROL_GAINED');	
-	
+	self:RegisterEvent('PLAYER_CONTROL_GAINED');
+
 	self:Print(self.Colors.Info .. 'Initialized');
 end
 
 function ConROC:PLAYER_EQUIPMENT_CHANGED(self, slotID, beingEquipped)
 	local _, _, Class = UnitClass("player")
-	
+
 	if slotID == 18 then
 		if Class == 5 or Class == 8 or Class == 9 then
 			ConROC:wandEquipmentChanged(slotID);
@@ -990,7 +982,7 @@ end
 
 function ConROC:ACTIONBAR_HIDEGRID()
 	ConROC:ButtonFetch();
-	
+
 	self:DestroyInterruptOverlays();
 	self:DestroyCoolDownOverlays();
 	self:DestroyPurgableOverlays();
@@ -1001,26 +993,34 @@ end
 
 function ConROC:PLAYER_CONTROL_LOST()
 --	self:Print(self.Colors.Success .. 'Lost Control!');
-		self:DisableRotation();
-		self:DisableDefense();
+	self:DisableRotation();
+	self:DisableDefense();
 end
 
 function ConROC:PLAYER_CONTROL_GAINED()
-		self:DisableRotation();
-		self:DisableDefense();
-		self:EnableRotation();
-		self:EnableDefense();
+	self:DisableRotation();
+	self:DisableDefense();
+	self:EnableRotation();
+	self:EnableDefense();
+end
+
+function ConROC:PLAYER_LEAVING_WORLD()
+	--	self:Print(self.Colors.Success .. 'Lost Control!');
+	self:DisableRotation();
+	self:DisableDefense();
 end
 
 function ConROC:PLAYER_ENTERING_WORLD()
-	self:UpdateButtonGlow();
-	if not self.rotationEnabled then
-		self:Print(self.Colors.Success .. 'Auto enable on login!');
-		self:Print(self.Colors.Info .. 'Loading '.. self.Classes[classIdv] ..' module');
-		self:LoadModule();
-		self:EnableRotation();
-		self:EnableDefense();
-	end
+	C_Timer.After(1, function()
+		self:UpdateButtonGlow();
+		if not self.rotationEnabled then
+			self:Print(self.Colors.Success .. 'Auto enable on login!');
+			self:Print(self.Colors.Info .. 'Loading '.. self.Classes[classIdv] ..' module');
+			self:LoadModule();
+			self:EnableRotation();
+			self:EnableDefense();
+		end
+	end);
 end
 
 function ConROC:PLAYER_TARGET_CHANGED()
@@ -1031,66 +1031,47 @@ function ConROC:PLAYER_TARGET_CHANGED()
 			self:DestroyInterruptOverlays();
 			self:DestroyPurgableOverlays();
 			self:InvokeNextSpell();
+			self:InvokeNextDef();
 		end
 	end
-	
+
 	if ConROC.db.profile.enableWindow and (ConROC.db.profile.combatWindow or ConROC:CheckBox(ConROC_SM_Role_Healer)) and ConROC:TarHostile() then
-		ConROCWindow:Show();	
+		ConROCWindow:Show();
 	elseif ConROC.db.profile.enableWindow and not (ConROC.db.profile.combatWindow or ConROC:CheckBox(ConROC_SM_Role_Healer)) then
-		ConROCWindow:Show();		
+		ConROCWindow:Show();
 	else
-		ConROCWindow:Hide();			
+		ConROCWindow:Hide();
 	end
-	
+
 	if ConROC.db.profile.enableDefenseWindow and ConROC.db.profile.combatWindow and ConROC:TarHostile() then
-		ConROCDefenseWindow:Show();			
+		ConROCDefenseWindow:Show();
 	elseif ConROC.db.profile.enableDefenseWindow and not ConROC.db.profile.combatWindow then
-		ConROCDefenseWindow:Show();			
+		ConROCDefenseWindow:Show();
 	else
-		ConROCDefenseWindow:Hide();			
+		ConROCDefenseWindow:Hide();
 	end
 end
 
 function ConROC:PLAYER_REGEN_DISABLED()
-	if not self.rotationEnabled then
-		self:Print(self.Colors.Success .. 'Auto enable on combat!');
-		self:Print(self.Colors.Info .. 'Loading class module');
-		self:LoadModule();
-		self:EnableRotation();
-		self:EnableDefense();
-	end
-end
-function ConROC:SPELLS_CHANGED()
-	if ConROC.SpellsChanged and ConROC.Seasons.IsSoD then
-		--print("Spell Changed", ConROC.Seasons.IsSoD)
-		ConROC:CR_SPELLS_LEARNED()
-	end
-	ConROC.SpellsChanged = true;
-end
-function ConROC:LEARNED_SPELL_IN_TAB()
-	--print("Spell learned")
-	if not ConROC.Seasons.IsSoD then
-		ConROC:CR_SPELLS_LEARNED()
-	end
-end
-function ConROC:CR_SPELLS_LEARNED()
-	ConROC:UpdateSpellID();
-	ConROC:ButtonFetch();
 	C_Timer.After(1, function()
-		ConROC:SpellMenuUpdate(true); -- new spell learned
-	end);
-end
-function ConROC:ButtonFetch()
-	C_Timer.After(1, function() 
-		if self.rotationEnabled then
-			if self.fetchTimer then
-				self:CancelTimer(self.fetchTimer);
-				self:CancelTimer(self.fetchdefTimer);
-			end
-			self.fetchTimer = self:ScheduleTimer('Fetch', 0.5);
-			self.fetchdefTimer = self:ScheduleTimer('FetchDef', 0.5);
+		self:UpdateButtonGlow();
+		if not self.rotationEnabled then
+			self:LoadModule();
+			self:EnableRotation();
+			self:EnableDefense();
 		end
 	end);
+end
+
+function ConROC:ButtonFetch()
+	if self.rotationEnabled then
+		if self.fetchTimer then
+			self:CancelTimer(self.fetchTimer);
+			self:CancelTimer(self.fetchdefTimer);
+		end
+		self.fetchTimer = self:ScheduleTimer('Fetch', 0.5);
+		self.fetchdefTimer = self:ScheduleTimer('FetchDef', 0.5);
+	end
 end
 
 ConROC.PLAYER_REGEN_ENABLED = ConROC.ButtonFetch;
@@ -1105,7 +1086,7 @@ function ConROC:InvokeNextSpell()
 	local oldSkill = self.Spell;
 
 	local timeShift, currentSpell, gcd = ConROC:EndCast();
-	
+
 	self.Spell = self:NextSpell(timeShift, currentSpell, gcd);
 	ConROC:UpdateRotation();
 	ConROC:UpdateButtonGlow();
@@ -1114,7 +1095,7 @@ function ConROC:InvokeNextSpell()
 		self:GlowNextSpell(self.Spell);
 		self:GlowNextWindow(self.Spell);
 	end
-	
+
 	if self.Spell == nil and oldSkill ~= nil then
 		self:GlowClear();
 		self:WindowClear();
@@ -1125,32 +1106,32 @@ function ConROC:InvokeNextDef()
 	local oldSkill = self.Def;
 
 	local timeShift, currentSpell, gcd = ConROC:EndCast();
-	
+
 	self.Def = self:NextDef(timeShift, currentSpell, gcd);
 	ConROC:UpdateDefRotation();
-	
+
 	if (oldSkill ~= self.Def or oldSkill == nil) and self.Def ~= nil then
 		self:GlowNextDef(self.Def);
-		self:GlowNextDefWindow(self.Def);		
+		self:GlowNextDefWindow(self.Def);
 	end
-	
+
 	if self.Def == nil and oldSkill ~= nil then
 		self:GlowClearDef();
-		self:DefWindowClear();		
+		self:DefWindowClear();
 	end
 end
 
 function ConROC:LoadModule()
 	local _, _, classId = UnitClass('player');
-	if self.Classes[classId] == nil then
-		self:Print(self.Colors.Error, 'Invalid player class, please contact author of addon.');
-		return;
-	end
+		if self.Classes[classId] == nil then
+			self:Print(self.Colors.Error, 'Invalid player class, please contact author of addon.');
+			return;
+		end
 
 	local module = 'ConROC_' .. self.Classes[classId];
-	local _, _, _, loadable, reason = GetAddOnInfo(module);
-	
-	if IsAddOnLoaded(module) then
+	local _, _, _, loadable, reason = C_AddOns.GetAddOnInfo(module);
+
+	if C_AddOns.IsAddOnLoaded(module) then
 		self:EnableRotationModule();
 		self:EnableDefenseModule();
 		return;
@@ -1161,7 +1142,7 @@ function ConROC:LoadModule()
 		return;
 	end
 
-	LoadAddOn(module)
+	C_AddOns.LoadAddOn(module)
 
 	self:EnableRotationModule();
 	self:EnableDefenseModule();

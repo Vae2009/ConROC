@@ -63,6 +63,16 @@ function ConROC:SpecTally()
 	return spec1, spec2, spec3;
 end
 
+function ConROC:IsPvP()
+	local _is_PvP = UnitIsPVP('player');
+	local _is_Arena, _is_Registered = IsActiveBattlefieldArena();
+	local _Flagged = false;
+		if _is_PvP or _is_Arena then
+			_Flagged = true;
+		end
+	return _Flagged;
+end
+
 function ConROC:PlayerSpeed()
 	local speed  = (GetUnitSpeed("player") / 7) * 100;
 	local moving = false;
@@ -70,8 +80,43 @@ function ConROC:PlayerSpeed()
 			moving = true;
 		else
 			moving = false;
-		end	
+		end
 	return moving;
+end
+
+ConROC.EnergyList = {
+	[0]	= 'Mana',
+	[1] = 'Rage',
+	[2]	= 'Focus',
+	[3] = 'Energy',
+	[4]	= 'Combo',
+	[6] = 'RunicPower',
+	[7]	= 'SoulShards',
+	[8] = 'LunarPower',
+	[9] = 'HolyPower',
+	[11] = 'Maelstrom',
+	[12] = 'Chi',
+	[13] = 'Insanity',
+	[16] = 'ArcaneCharges',
+	[17] = 'Fury',
+	[19] = 'Essence',
+}
+
+function ConROC:PlayerPower(_EnergyType)
+	local resource;
+
+	for k, v in pairs(ConROC.EnergyList) do
+		if v == _EnergyType then
+			resource = k;
+			break
+		end
+	end
+
+	local _Resource = UnitPower('player', resource);
+	local _Resource_Max	= UnitPowerMax('player', resource);
+	local _Resource_Percent = math.max(0, _Resource) / math.max(1, _Resource_Max) * 100;
+
+	return _Resource, _Resource_Max, _Resource_Percent;
 end
 
 local defaultEnemyNameplates
@@ -115,115 +160,250 @@ frame:SetScript("OnEvent", function(self, event)
 end)
 
 function ConROC:Targets(spellID)
-	local inRange = 0
-	for id = 1, 40 do
-      local unitID = "nameplate" .. id
-	  if UnitCanAttack("player", unitID) and ConROC:IsSpellInRange(GetSpellInfo(spellID), unitID) then
-	     inRange = inRange + 1
-	  end
-	end
-	return inRange;
+	local target_in_range = false;
+	local number_in_range = 0;
+	local minRange, maxRange = false, false;
+		if spellID == "Melee" then
+			if UnitReaction("player", "target") ~= nil then
+				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
+					_, maxRange = ConROC.rc:getRange("target");
+					if maxRange then
+						if tonumber(maxRange) <= 5 then
+							target_in_range = true;
+						end
+					end
+				end
+			end
+
+			for i = 1, 15 do
+				if UnitReaction("player", 'nameplate' .. i) ~= nil then
+					if UnitReaction("player", 'nameplate' .. i) <= 4 and UnitExists('nameplate' .. i) and UnitAffectingCombat('nameplate' .. i) then
+						_, maxRange = ConROC.rc:getRange('nameplate' .. i);
+						if maxRange then
+							if tonumber(maxRange) <= 5 then
+								number_in_range = number_in_range + 1
+							end
+						end
+					end
+				end
+			end
+		elseif spellID == "10" then
+			if UnitReaction("player", 'nameplate' .. i) ~= nil then
+				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
+					_, maxRange = ConROC.rc:getRange("target");
+					if maxRange then
+						if tonumber(maxRange) <= 10 then
+							target_in_range = true;
+						end
+					end
+				end
+			end
+
+			for i = 1, 15 do
+				if UnitReaction("player", 'nameplate' .. i) ~= nil then
+					if UnitReaction("player", 'nameplate' .. i) <= 4 and UnitExists('nameplate' .. i) and UnitAffectingCombat('nameplate' .. i) then
+						_, maxRange = ConROC.rc:getRange('nameplate' .. i);
+						if maxRange then
+							if tonumber(maxRange) <= 10 then
+								number_in_range = number_in_range + 1
+							end
+						end
+					end
+				end
+			end
+		elseif spellID == "20" then
+			if UnitReaction("player", "target") ~= nil then
+				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
+					_, maxRange = ConROC.rc:getRange("target");
+					if maxRange then
+						if tonumber(maxRange) <= 20 then
+							target_in_range = true;
+						end
+					end
+				end
+			end
+
+			for i = 1, 15 do
+				if UnitReaction("player", 'nameplate' .. i) ~= nil then
+					if UnitReaction("player", 'nameplate' .. i) <= 4 and UnitExists('nameplate' .. i) and UnitAffectingCombat('nameplate' .. i) then
+						_, maxRange = ConROC.rc:getRange('nameplate' .. i);
+						if maxRange then
+							if tonumber(maxRange) <= 20 then
+								number_in_range = number_in_range + 1
+							end
+						end
+					end
+				end
+			end
+		elseif spellID == "30" then
+			if UnitReaction("player", "target") ~= nil then
+				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
+					_, maxRange = ConROC.rc:getRange("target");
+					if maxRange then
+						if tonumber(maxRange) <= 30 then
+							target_in_range = true;
+						end
+					end
+				end
+			end
+
+			for i = 1, 15 do
+				if UnitReaction("player", 'nameplate' .. i) ~= nil then
+					if UnitReaction("player", 'nameplate' .. i) <= 4 and UnitExists('nameplate' .. i) and UnitAffectingCombat('nameplate' .. i) then
+						_, maxRange = ConROC.rc:getRange('nameplate' .. i);
+						if maxRange then
+							if tonumber(maxRange) <= 30 then
+								number_in_range = number_in_range + 1
+							end
+						end
+					end
+				end
+			end
+		elseif spellID == "40" then
+			if UnitReaction("player", "target") ~= nil then
+				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
+					_, maxRange = ConROC.rc:getRange("target");
+					if maxRange then
+						if tonumber(maxRange) <= 40 then
+							target_in_range = true;
+						end
+					end
+				end
+			end
+
+			for i = 1, 15 do
+				if UnitReaction("player", 'nameplate' .. i) ~= nil then
+					if UnitReaction("player", 'nameplate' .. i) <= 4 and UnitExists('nameplate' .. i) and UnitAffectingCombat('nameplate' .. i) then
+						_, maxRange = ConROC.rc:getRange('nameplate' .. i);
+						if maxRange then
+							if tonumber(maxRange) <= 40 then
+								number_in_range = number_in_range + 1
+							end
+						end
+					end
+				end
+			end
+		else
+			if ConROC:IsSpellInRange(spellID, "target") then
+				target_in_range = true;
+			end
+
+			for i = 1, 15 do
+				if UnitExists('nameplate' .. i) and UnitAffectingCombat('nameplate' .. i) and ConROC:IsSpellInRange(spellID, 'nameplate' .. i) then
+					number_in_range = number_in_range + 1
+				end
+			end
+		end
+	--print(number_in_range)
+	return number_in_range, target_in_range;
 end
+
 function ConROC:UnitAura(spellID, timeShift, unit, filter, isWeapon)
 	timeShift = timeShift or 0;
+	local spellName = GetSpellInfo(spellId);
+	local alreadyUp = false;
+
+	-- Handling weapon enchants
 	if isWeapon == "Weapon" then
 		local hasMainHandEnchant, mainHandExpiration, _, mainBuffId, hasOffHandEnchant, offHandExpiration, _, offBuffId = GetWeaponEnchantInfo()
 		if hasMainHandEnchant and mainBuffId == spellID then
-			if mainHandExpiration ~= nil and (mainHandExpiration - GetTime()) > timeShift then
-				local dur = mainHandExpiration - GetTime() - (timeShift or 0);
-				return true, count, dur;
+			if mainHandExpiration and (mainHandExpiration / 1000) > timeShift then
+				local dur = (mainHandExpiration / 1000) - timeShift;
+				return true, 0, dur;  -- No count information for weapon enchants
 			end
 		elseif hasOffHandEnchant and offBuffId == spellID then
-			if offHandExpiration ~= nil and (offHandExpiration - GetTime()) > timeShift then
-				local dur = offHandExpiration - GetTime() - (timeShift or 0);
-				return true, count, dur;
+			if offHandExpiration and (offHandExpiration / 1000) > timeShift then
+				local dur = (offHandExpiration / 1000) - timeShift;
+				return true, 0, dur;  -- No count information for weapon enchants
 			end
 		end
 	else
-		for i=1,16 do
-			local _, _, count, _, _, expirationTime, _, _, _, spell = UnitAura(unit, i, filter);
-			if spell == spellID then
-				if expirationTime ~= nil and (expirationTime - GetTime()) > timeShift then
-					local dur = expirationTime - GetTime() - (timeShift or 0);
-					return true, count, dur;
+		-- Iterating through unit auras
+		for i = 1, 40 do
+			local aura = C_UnitAuras.GetAuraDataByIndex(unit, i, filter)
+			if not aura then
+				break  -- No more auras to check
+			end
+
+			if aura.name == spellName then
+				alreadyUp = true;
+			end
+
+			if aura.spellId == spellID then
+				local expirationTime = aura.expirationTime
+				if expirationTime and (expirationTime - GetTime()) > timeShift then
+					local dur = expirationTime - GetTime() - timeShift
+					return true, aura.applications or 1, dur, alreadyUp;
 				end
 			end
 		end
 	end
-	return false, 0, 0;
-end
-
-function ConROC:BuffName(spellId, timeShift)
-	timeShift = timeShift or 0;
-	local spellName = GetSpellInfo(spellId);
-	for i=1,16 do
-		local name, _, _, _, _, expirationTime, _, _, _, spell = UnitAura('player', i, 'HELPFUL');
-		if name == spellName then
-			if expirationTime ~= nil and (expirationTime - GetTime()) > timeShift then
-				local dur = expirationTime - GetTime() - (timeShift or 0);
-				return true, dur;
-			end
-		end
-	end
-	return false, 0;
-end
-
-function ConROC:DebuffName(spellId)
-	local spellName = GetSpellInfo(spellId);
-	for i=1,16 do
-		local name, _, count, _, _, _, _, _, _, spell = UnitAura('target', i, 'HARMFUL');
-		if name == spellName then
-			return true, count;
-		end
-	end
-	return false, 0;
+	return false, 0, 0, alreadyUp;
 end
 
 function ConROC:Form(spellID)
-	for i=1,16 do 
-		local _, _, count, _, _, _, _, _, _, spell = UnitAura("player", i);
-			if spell == spellID then 
-				return true, count;
+	for i = 1, 40 do
+		local aura = C_UnitAuras.GetAuraDataByIndex("player", i, "HELPFUL");
+		if aura and aura.spellId == spellID then
+			return true, aura.applications or 1;
 			end
 	end
 	return false, 0;
 end
 
-function ConROC:TargetDebuff(spellID)
-	for i=1,16 do 
-		local _, _, count, _, _, expirationTime, _, _, _, spell = UnitAura("target", i, 'PLAYER|HARMFUL');
-			if spell == spellID then
-				local remainingTime = math.floor((expirationTime - GetTime())*10) / 10
-				return true, count, remainingTime;
-			end 
-		 
+function ConROC:PersistentDebuff(spellID)
+	for i = 1, 40 do
+		local aura = C_UnitAuras.GetAuraDataByIndex("target", i, "PLAYER|HARMFUL");
+		if aura and aura.spellId == spellID then
+			return true, aura.applications or 1;
+		end
 	end
 	return false, 0;
 end
 
-function ConROC:Buff(spellID, timeShift, filter)
+function ConROC:Aura(spellID, timeShift, filter)
 	return self:UnitAura(spellID, timeShift, 'player', filter);
 end
 
-function ConROC:Cleansable(spellID)
-	local isFriend = UnitIsFriend("player", "target");
-	for i=1,16 do 
-		local _, _, _, debuffType = UnitAura("target", i, 'HARMFUL');
-		if isFriend then 
-			return true;
+function ConROC:TargetAura(spellID, timeShift)
+	return self:UnitAura(spellID, timeShift, 'target', 'PLAYER|HARMFUL');
+end
+
+function ConROC:AnyTargetAura(spellID)
+	local haveBuff = false;
+	local count = 0;
+
+	-- Iterate over nameplates
+	for i = 1, 15 do
+		if UnitExists('nameplate' .. i) then
+			-- Iterate over auras on the current nameplate
+			for x = 1, 40 do
+				local aura = C_UnitAuras.GetAuraDataByIndex('nameplate' .. i, x, 'PLAYER|HARMFUL')
+				if not aura then
+					break  -- No more auras to check
+				end
+
+				if aura.spellId == spellID then
+					haveBuff = true;
+					count = count + 1;
+					break;  -- No need to check further auras on this nameplate
+				end
+			end
 		end
 	end
-	return false;
+
+	return haveBuff, count;
 end
 
 function ConROC:Purgable()
 	local purgable = false;
-	for i=1,16 do 
-	local _, _, _, _, _, _, _, isStealable = UnitAura('target', i, 'HELPFUL');
-		if isStealable == true then 
+	for i = 1, 40 do
+		local aura = C_UnitAuras.GetAuraDataByIndex("target", i, "HELPFUL");
+		if aura and aura.isStealable then
 			purgable = true;
-		end 
-	end 
+			break;
+		end
+	end
 	return purgable;
 end
 
@@ -499,8 +679,8 @@ function ConROC:TarHostile()
 	return false;
 end
 
-function ConROC:PercentHealth(unit)
-	local unit = unit or 'target';
+function ConROC:PercentHealth(target_unit)
+	local unit = target_unit or 'target';
 	local health = UnitHealth(unit);
 	local healthMax = UnitHealthMax(unit);
 	if health <= 0 or healthMax <= 0 then
@@ -544,30 +724,74 @@ function ConROC:IsMeleeRange()
 	end
 end
 
-function ConROC:IsSpellInRange(spell, unit)
-	local unit = unit or 'target';
+function ConROC:IsSpellInRange(spellid, target_unit)
+	local unit = target_unit or 'target';
 	local range = false;
-	local spellName = GetSpellInfo(spell);
-	--print(spellName)
-	local inRange = IsSpellInRange(spellName, unit);
-	--print("inRange", inRange);
-	if inRange == 1 then
-		range = true;	
-	end
-	
-    return range;
+	local known = IsPlayerSpell(spellid);
+
+	if known and ConROC:TarHostile() then
+		-- Use C_Spell.IsSpellInRange instead of IsSpellInRange
+		local inRange = C_Spell.IsSpellInRange(spellid, unit);
+
+		if inRange == nil then
+			local myIndex = nil
+            local skillLineInfo = C_SpellBook.GetSpellBookSkillLineInfo(2) -- Get skill line info for the second tab
+
+            if skillLineInfo then
+                local offset = skillLineInfo.itemIndexOffset
+                local numSpells = skillLineInfo.numSpellBookItems
+                local booktype = Enum.SpellBookSpellBank.Player
+
+                if offset and numSpells then
+					for index = offset + 1, numSpells + offset do
+						local spellBookInfo = C_SpellBook.GetSpellBookItemInfo(index, booktype)
+                        if spellBookInfo and spellid == spellBookInfo.spellID then
+                            myIndex = index
+                            break
+						end
+					end
+				end
+			else
+                -- Handle case where skillLineInfo is nil
+                print("Error: Unable to retrieve skill line information.")
+            end
+
+			local numPetSpells, _ = C_SpellBook.HasPetSpells()
+            if not myIndex and numPetSpells then
+                local booktype = Enum.SpellBookSpellBank.Pet
+				for index = 1, numPetSpells do
+					local spellBookInfo = C_SpellBook.GetSpellBookItemInfo(index, booktype)
+                    if spellBookInfo and spellid == spellBookInfo.spellID then
+                        myIndex = index
+                        break
+					end
+				end
+			end
+
+			if myIndex then
+				inRange = C_Spell.IsSpellInRange(myIndex, unit)
+            end
+		end
+
+		if inRange == true then
+            range = true
+        end
+    end
+
+  return range;
 end
 
-function ConROC:AbilityReady(spellid, timeShift, pet)
-	local cd, maxCooldown = ConROC:Cooldown(spellid, timeShift + 1);
+function ConROC:AbilityReady(spellid, timeShift, spelltype)
+	local _CD, _MaxCD = ConROC:Cooldown(spellid, timeShift);
 	local known = IsPlayerSpell(spellid) or IsSpellKnownOrOverridesKnown(spellid);
-	local usable, notEnough = IsUsableSpell(spellid);
-	local castTimeMilli = select(4, GetSpellInfo(spellid));
+	local usable, notEnough = C_Spell.IsSpellUsable(spellid);
+	local castTimeMilli = C_Spell.GetSpellInfo(spellid).castTime;
+	local castTime = 0;
 	local rdy = false;
-		if pet == 'pet' then
+		if spelltype == 'pet' then
 			known = IsSpellKnown(spellid, true);
 		end
-		if known and usable and cd <= 0 and not notEnough then
+		if known and usable and _CD <= 0 and not notEnough then
 			rdy = true;
 		else
 			rdy = false;
@@ -575,7 +799,7 @@ function ConROC:AbilityReady(spellid, timeShift, pet)
 		if castTimeMilli ~= nil then
 			castTime = castTimeMilli/1000;
 		end
-	return rdy, cd, maxCooldown, castTime;
+	return spellid, rdy, _CD, _MaxCD, castTime;
 end
 
 function ConROC:ItemReady(itemid, timeShift)
