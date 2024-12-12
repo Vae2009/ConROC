@@ -35,9 +35,9 @@ ConROC.FinalTexture = nil;
 ConROC.IsClassic = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 
 ConROC.Seasons ={
-	IsWotlk = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC, 
-	IsEra = ConROC.IsClassic and (not C_Seasons.HasActiveSeason()),
-	IsSoD = ConROC.IsClassic and C_Seasons.HasActiveSeason() and (C_Seasons.GetActiveSeason() ~= Enum.SeasonID.Hardcore),
+	IsWotlk = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC,
+	IsEra = ConROC.IsClassic and C_Seasons.HasActiveSeason() and C_Seasons.GetActiveSeason() == Enum.SeasonID.Fresh,
+	IsSoD = ConROC.IsClassic and C_Seasons.HasActiveSeason() and C_Seasons.GetActiveSeason() == Enum.SeasonID.SeasonOfDiscovery,
 	IsHardcore = C_GameRules and C_GameRules.IsHardcoreActive(),
 }
 
@@ -959,6 +959,8 @@ function ConROC:OnEnable()
 	self:RegisterEvent('UPDATE_SHAPESHIFT_FORM');
 	self:RegisterEvent('ACTIONBAR_HIDEGRID');
 	self:RegisterEvent('ACTIONBAR_PAGE_CHANGED');
+	self:RegisterEvent('LEARNED_SPELL_IN_TAB');
+	self:RegisterEvent('SPELLS_CHANGED');
 
 	self:RegisterEvent('CHARACTER_POINTS_CHANGED');
 	self:RegisterEvent('UPDATE_MACROS');
@@ -1060,6 +1062,27 @@ function ConROC:PLAYER_REGEN_DISABLED()
 			self:EnableRotation();
 			self:EnableDefense();
 		end
+	end);
+end
+
+function ConROC:SPELLS_CHANGED()
+	if ConROC.SpellsChanged and ConROC.Seasons.IsSoD then
+		--print("Spell Changed", ConROC.Seasons.IsSoD)
+		ConROC:CR_SPELLS_LEARNED()
+	end
+	ConROC.SpellsChanged = true;
+end
+function ConROC:LEARNED_SPELL_IN_TAB()
+	--print("Spell learned")
+	if not ConROC.Seasons.IsSoD then
+		ConROC:CR_SPELLS_LEARNED()
+	end
+end
+function ConROC:CR_SPELLS_LEARNED()
+	ConROC:UpdateSpellID();
+	ConROC:ButtonFetch();
+	C_Timer.After(1, function()
+		ConROC:SpellMenuUpdate(true); -- new spell learned
 	end);
 end
 

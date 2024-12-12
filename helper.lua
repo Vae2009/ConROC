@@ -188,7 +188,7 @@ function ConROC:Targets(spellID)
 				end
 			end
 		elseif spellID == "10" then
-			if UnitReaction("player", 'nameplate' .. i) ~= nil then
+			if UnitReaction("player", "target") ~= nil then
 				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
 					_, maxRange = ConROC.rc:getRange("target");
 					if maxRange then
