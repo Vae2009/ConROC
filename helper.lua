@@ -63,6 +63,27 @@ function ConROC:SpecTally()
 	return spec1, spec2, spec3;
 end
 
+function ConROC:PopulateTalentIDs()
+    local numTabs = GetNumTalentTabs()
+
+    for tabIndex = 1, numTabs do
+        local tabName = GetTalentTabInfo(tabIndex)
+        tabName = string.gsub(tabName, "[^%w]", "") .. "_Talent" -- Remove spaces from tab name
+        print("ids."..tabName.." = {")
+        local numTalents = GetNumTalents(tabIndex)
+
+        for talentIndex = 1, numTalents do
+            local name, _, _, _, _ = GetTalentInfo(tabIndex, talentIndex)
+
+            if name then
+                local talentID = string.gsub(name, "[^%w]", "") -- Remove spaces from talent name
+                    print(talentID .." = ", talentIndex ..",")
+            end
+        end
+        print("}")
+    end
+end
+
 function ConROC:IsPvP()
 	local _is_PvP = UnitIsPVP('player');
 	local _is_Arena, _is_Registered = IsActiveBattlefieldArena();

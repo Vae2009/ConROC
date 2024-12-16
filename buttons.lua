@@ -186,8 +186,16 @@ function ConROC:SlashUnlock()
 	end
 end
 
+local printTalentsMode = false
+
 SLASH_CONROCUNLOCK1 = '/ConROCUL'
 SlashCmdList["CONROCUNLOCK"] = function() ConROC:SlashUnlock() end
+-- Slash command for printing talent tree with talent names and ID numbers
+SLASH_CONROCPRINTTALENTS1 = "/ConROCPT"
+SlashCmdList["CONROCPRINTTALENTS"] = function()
+    printTalentsMode = not printTalentsMode
+    ConROC:PopulateTalentIDs()
+end
 
 function ConROC:DisplayToggleFrame()
 	local _, Class = UnitClass("player")

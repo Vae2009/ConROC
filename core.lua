@@ -1079,10 +1079,12 @@ function ConROC:LEARNED_SPELL_IN_TAB()
 	end
 end
 function ConROC:CR_SPELLS_LEARNED()
-	ConROC:UpdateSpellID();
-	ConROC:ButtonFetch();
 	C_Timer.After(1, function()
-		ConROC:SpellMenuUpdate(true); -- new spell learned
+		ConROC:UpdateSpellID();
+		ConROC:ButtonFetch();
+		C_Timer.After(1, function()
+			ConROC:SpellMenuUpdate(true); -- new spell learned
+		end);
 	end);
 end
 
