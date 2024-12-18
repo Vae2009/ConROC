@@ -676,9 +676,67 @@ function ConROC:SameSpell(spell1, spell2)
 	return spellName1 == spellName2;
 end
 
+function ConROC:IsOverride(spellID)
+	local _OverriddenBy = C_Spell.GetOverrideSpell(spellID);
+	return _OverriddenBy;
+end
+
+--[[
+0 = ammo
+1 = head
+2 = neck
+3 = shoulder
+4 = shirt
+5 = chest
+6 = belt
+7 = legs
+8 = feet
+9 = wrist
+10 = gloves
+11 = finger 1
+12 = finger 2
+13 = trinket 1
+14 = trinket 2
+15 = back
+16 = main hand
+17 = off hand
+18 = ranged
+19 = tabard
+20 = first bag (the rightmost one)
+21 = second bag
+22 = third bag
+23 = fourth bag (the leftmost one)
+]]
+
+function ConROC:RuneEquipped(spellID, equipSlot)
+	local _Slot = _;
+	local _EquipmentID = {
+		[1] = "head",
+		[5] = "chest",
+		[6] = "waist",
+		[7] = "legs",
+		[8] = "feet",
+		[9] = "wrist",
+		[10] = "hands",
+		[15] = "back",
+		}
+	for k, v in pairs(_EquipmentID) do
+		if v == equipSlot then
+			_Slot = k;
+			break
+		end
+	end
+
+	local _Engraving_Info = C_Engraving.GetRuneForEquipmentSlot(_Slot);
+	local _Item_Enchanted = false;
+		if _Engraving_Info.itemEnchantmentID == spellID then
+			_Item_Enchanted = true;
+		end
+	return _Item_Enchanted;
+end
+
 function ConROC:TarYou()
 	local tarYou = false;
-	
 	local targettarget = UnitName('targettarget');
 	local targetplayer = UnitName('player');
 	if targettarget == targetplayer then
