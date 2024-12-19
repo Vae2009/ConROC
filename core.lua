@@ -156,7 +156,7 @@ local classinfo = " ";
 	if cversion ~= nil then
 		classinfo = ConROC.Classes[classIdv] .. ': Ver ' .. cversion;
 	end
-print("ConROC.Classes[classIdv]",ConROC.Classes[classIdv])
+--print("ConROC.Classes[classIdv]",ConROC.Classes[classIdv])
 local options = {
 	type = 'group',
 	name = '-= |cffFFFFFFConROC  (Conflict Rotation Optimizer Classic)|r =-',
@@ -1013,7 +1013,7 @@ function ConROC:PLAYER_LEAVING_WORLD()
 end
 
 function ConROC:PLAYER_ENTERING_WORLD()
-	C_Timer.After(1, function()
+	C_Timer.After(2, function()
 		self:UpdateButtonGlow();
 		if not self.rotationEnabled then
 			self:Print(self.Colors.Success .. 'Auto enable on login!');
@@ -1022,6 +1022,7 @@ function ConROC:PLAYER_ENTERING_WORLD()
 			self:EnableRotation();
 			self:EnableDefense();
 		end
+		ConROCSpellmenuFrame:Show();
 	end);
 end
 
@@ -1072,12 +1073,14 @@ function ConROC:SPELLS_CHANGED()
 	end
 	ConROC.SpellsChanged = true;
 end
+
 function ConROC:LEARNED_SPELL_IN_TAB()
 	--print("Spell learned")
 	if not ConROC.Seasons.IsSoD then
 		ConROC:CR_SPELLS_LEARNED()
 	end
 end
+
 function ConROC:CR_SPELLS_LEARNED()
 	C_Timer.After(1, function()
 		ConROC:UpdateSpellID();

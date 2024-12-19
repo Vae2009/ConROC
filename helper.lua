@@ -729,9 +729,11 @@ function ConROC:RuneEquipped(spellID, equipSlot)
 
 	local _Engraving_Info = C_Engraving.GetRuneForEquipmentSlot(_Slot);
 	local _Item_Enchanted = false;
-	if _Engraving_Info.itemEnchantmentID ~= nil then
-		if _Engraving_Info.itemEnchantmentID == spellID then
-			_Item_Enchanted = true;
+	if _Engraving_Info ~= nil then
+		if _Engraving_Info.itemEnchantmentID ~= nil then
+			if _Engraving_Info.itemEnchantmentID == spellID then
+				_Item_Enchanted = true;
+			end
 		end
 	end
 	return _Item_Enchanted;

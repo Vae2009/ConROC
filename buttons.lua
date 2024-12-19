@@ -32,7 +32,7 @@ function ConROCTTOnEnter(self)
 	local ttFrameName = self:GetName();
 	--print(":GetName()", self:GetName());
 	GameTooltip_SetDefaultAnchor( GameTooltip, UIParent )
-		
+
 	if ttFrameName == "ConROCSpellmenuFrame_OpenButton" or "ConROCSpellmenuFrame_Title" then
 		GameTooltip:SetText("ConROC Rotation options")  -- This sets the top line of text, in gold.
 		if ttFrameName == "ConROCSpellmenuFrame_OpenButton" then
@@ -759,7 +759,7 @@ function ConROC:SpellmenuFrame()
 		frameTitle:SetScript("OnEnter", ConROCTTOnEnter)
 		frameTitle:SetScript("OnLeave", ConROCTTOnLeave)
 		--frameTitle:EnableMouse(false)
-		
+
 		frameTitle:RegisterForDrag("LeftButton")
 		frameTitle:SetScript("OnDragStart", function(self)
 			if ConROC.db.profile.unlockWindow then
@@ -775,7 +775,6 @@ function ConROC:SpellmenuFrame()
 		fonttitle:SetText(select(1, GetClassInfo(classId)) .. " Spells");
 		fonttitle:SetPoint('TOP', frameTitle, 'TOP', 0, 0);
 
-
 	local otbutton = CreateFrame("Button", 'ConROCSpellmenuFrame_OpenButton', frame);
 		otbutton:SetFrameStrata('MEDIUM');
 		otbutton:SetFrameLevel('6');
@@ -787,7 +786,6 @@ function ConROC:SpellmenuFrame()
 		--otbutton:SetText(ConROC.Classes[classId] .. " Spells");
 		otbutton:SetText(select(1, GetClassInfo(classId)) .. " Spells");
 		otbutton:SetNormalFontObject("GameFontHighlightSmall");
-
 		otbutton:SetScript("OnEnter", ConROCTTOnEnter)
 		otbutton:SetScript("OnLeave", ConROCTTOnLeave)
 
@@ -839,7 +837,6 @@ function ConROC:SpellmenuFrame()
 		tbutton:SetSize(12, 12)
 		tbutton:Hide()
 		tbutton:SetAlpha(1)
-
 		tbutton:SetText("X")
 		tbutton:SetNormalFontObject("GameFontHighlightSmall")
 
@@ -899,10 +896,11 @@ function ConROC:SpellmenuFrame()
     end)
 
     -- Initialize the lock texture based on initial unlockWindow status
-    ConROC:UpdateLockTexture()
+    ConROC:UpdateLockTexture();
     lockButton:Show();
-
+	ConROCSpellmenuFrame:Hide();
 end
+
 function ConROC:closeSpellmenu()
 	ConROCSpellmenuFrame_CloseButton:Hide();
 	ConROCSpellmenuFrame_Title:Hide();
@@ -911,6 +909,7 @@ function ConROC:closeSpellmenu()
 	ConROCSpellmenuFrame_OpenButton:Show();
 	optionsOpened = false;
 end
+
 local slotsUsed = {}
 function ConROC:FindKeybinding(id,caller)
 	local keybind;
