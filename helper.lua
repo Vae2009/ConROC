@@ -11,70 +11,37 @@ function ConROC:TalentChosen(spec, talent)
 	if currentRank >= 1 then
 		return true, currentRank, maxRank, name, tier;
 	end
-	return false, 0, 0;
+	return false, 0, 0, 0, 0;
 end
 
-function ConROC:currentSpec(ID)
-    local numTabs  = GetNumTalentTabs()
-    local currentSpecName
-    local CurrentSpecID
-    local maxPoints = 0
+function ConROC:currentSpec()
+    local numTabs  = GetNumTalentTabs();
+    local currentSpecName, currentSpecID = false, 0;
+    local maxPoints = 0;
     for tab = 1, numTabs do
-        local numTalents = GetNumTalents(tab)
-        local pointsSpent = 0
-
+        local numTalents = GetNumTalents(tab);
+        local pointsSpent = 0;
         for talent = 1, numTalents do
-            local _, _, _, _, spent = GetTalentInfo(tab, talent)
-            pointsSpent = pointsSpent + spent
+            local _, _, _, _, spent = GetTalentInfo(tab, talent);
+            pointsSpent = pointsSpent + spent;
         end
-
         if pointsSpent > maxPoints then
-            maxPoints = pointsSpent
-            currentSpecName = GetTalentTabInfo(tab)
-            CurrentSpecID = tab
+            maxPoints = pointsSpent;
+            currentSpecID, currentSpecName = GetTalentTabInfo(tab);
         end
     end
-    if ID then
-    	return CurrentSpecID
-    else
-	    return currentSpecName
-	end
-end
-
-function ConROC:SpecTally()
-	local _, _, classId = UnitClass('player');
-	local class = ConROC.Classes[classId];
-	local spec1 = 0;
-	local spec2 = 0;
-	local spec3 = 0;
-	for spec = 1, GetNumTalentTabs() do
-		for talent = 1, GetNumTalents(spec) do
-			local _, _, _, _, currentRank, maxRank = GetTalentInfo(spec, talent);
-			if spec == 1 then
-				spec1 = spec1 + currentRank;
-			elseif spec == 2 then
-				spec2 = spec2 + currentRank;
-			else
-				spec3 = spec3 + currentRank;
-			end
-		end
-	end
-	--print(ConROC.Colors[classId] .. ConROC.Description .. "|r  " .. spec1 .. " / " .. spec2 .. " / " .. spec3);
-	return spec1, spec2, spec3;
+	return currentSpecName, currentSpecID;
 end
 
 function ConROC:PopulateTalentIDs()
     local numTabs = GetNumTalentTabs()
-
     for tabIndex = 1, numTabs do
         local tabName = GetTalentTabInfo(tabIndex)
         tabName = string.gsub(tabName, "[^%w]", "") .. "_Talent" -- Remove spaces from tab name
         print("ids."..tabName.." = {")
         local numTalents = GetNumTalents(tabIndex)
-
         for talentIndex = 1, numTalents do
             local name, _, _, _, _ = GetTalentInfo(tabIndex, talentIndex)
-
             if name then
                 local talentID = string.gsub(name, "[^%w]", "") -- Remove spaces from talent name
                     print(talentID .." = ", talentIndex ..",")

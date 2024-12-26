@@ -701,87 +701,85 @@ function ConROC:SpellmenuFrame()
 	local _, Class, classId = UnitClass("player")
 	local Color = RAID_CLASS_COLORS[Class]
 	local frame = CreateFrame("Frame", "ConROCSpellmenuFrame", UIParent,"BackdropTemplate")
+	frame:SetFrameStrata('MEDIUM');
+	frame:SetFrameLevel('4')
+	frame:SetSize((90) + 14, (15) + 14)
+		if ConROC.db.profile._Hide_Spellmenu then
+			frame:SetAlpha(0);
+			else
+			frame:SetAlpha(1);
+		end
 
-		frame:SetFrameStrata('MEDIUM');
-		frame:SetFrameLevel('4')
-		frame:SetSize((90) + 14, (15) + 14)
+	frame:SetBackdrop( {
+		bgFile = "Interface\\CHATFRAME\\CHATFRAMEBACKGROUND",
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+		tile = true,
+		tileSize = 8,
+		edgeSize = 20,
+		insets = { left = 4, right = 4, top = 4, bottom = 4 }
+		})
+	frame:SetBackdropColor(0, 0, 0, .75)
+	frame:SetBackdropBorderColor(Color.r, Color.g, Color.b, .75)
+
+	frame:SetPoint("TOP", 700, -200)
+	frame:SetMovable(true)
+	frame:EnableMouse(true)
+	frame:SetClampedToScreen(true)
+	frame:RegisterForDrag("LeftButton")
+	frame:SetScript("OnDragStart", function(self)
+		if ConROC.db.profile.unlockWindow then
+			frame:StartMoving()
+		end
+	end)
+	frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+	frame:SetScript("OnEnter", function(self)
+		frame:SetAlpha(1);
+	end)
+	frame:SetScript("OnLeave", function(self)
+		if not MouseIsOver(frame) then
 			if ConROC.db.profile._Hide_Spellmenu then
 				frame:SetAlpha(0);
-			 else
+				else
 				frame:SetAlpha(1);
 			end
-
-		frame:SetBackdrop( {
-			bgFile = "Interface\\CHATFRAME\\CHATFRAMEBACKGROUND",
-			edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-			tile = true,
-			tileSize = 8,
-			edgeSize = 20,
-			insets = { left = 4, right = 4, top = 4, bottom = 4 }
-			})
-		frame:SetBackdropColor(0, 0, 0, .75)
-		frame:SetBackdropBorderColor(Color.r, Color.g, Color.b, .75)
-
-		frame:SetPoint("TOP", 700, -200)
-		frame:SetMovable(true)
-		frame:EnableMouse(true)
-		frame:SetClampedToScreen(true)
-		frame:RegisterForDrag("LeftButton")
-		frame:SetScript("OnDragStart", function(self)
-			if ConROC.db.profile.unlockWindow then
-				frame:StartMoving()
-			end
-		end)
-		frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-		frame:SetScript("OnEnter", function(self)
-			frame:SetAlpha(1);
-		end)
-		frame:SetScript("OnLeave", function(self)
-			if not MouseIsOver(frame) then
-				if ConROC.db.profile._Hide_Spellmenu then
-					frame:SetAlpha(0);
-				 else
-					frame:SetAlpha(1);
-				end
-			end
-		end)
+		end
+	end)
 
 	local frameTitle = CreateFrame("Frame", "ConROCSpellmenuFrame_Title", frame)
+	frameTitle:SetFrameStrata('MEDIUM');
+	frameTitle:SetFrameLevel('5');
+	frameTitle:SetSize(180, 20);
+	frameTitle:SetAlpha(1);
 
-		frameTitle:SetFrameStrata('MEDIUM');
-		frameTitle:SetFrameLevel('5');
-		frameTitle:SetSize(180, 20);
-		frameTitle:SetAlpha(1);
+	frameTitle:SetPoint("TOP", frame, "TOP", 0, -8);
+	frameTitle:Hide();
 
-		frameTitle:SetPoint("TOP", frame, "TOP", 0, -8);
-		frameTitle:Hide();
+	frameTitle:SetScript("OnEnter", ConROCTTOnEnter)
+	frameTitle:SetScript("OnLeave", ConROCTTOnLeave)
+	--frameTitle:EnableMouse(false)
 
-		frameTitle:SetScript("OnEnter", ConROCTTOnEnter)
-		frameTitle:SetScript("OnLeave", ConROCTTOnLeave)
-		--frameTitle:EnableMouse(false)
-
-		frameTitle:RegisterForDrag("LeftButton")
-		frameTitle:SetScript("OnDragStart", function(self)
-			if ConROC.db.profile.unlockWindow then
-				self:GetParent():StartMoving()
-			end
-		end)
-		frameTitle:SetScript("OnDragStop", function(self)
-			self:GetParent():StopMovingOrSizing()
-		end) --, frameTitle:GetParent().StopMovingOrSizing)
+	frameTitle:RegisterForDrag("LeftButton")
+	frameTitle:SetScript("OnDragStart", function(self)
+		if ConROC.db.profile.unlockWindow then
+			self:GetParent():StartMoving()
+		end
+	end)
+	frameTitle:SetScript("OnDragStop", function(self)
+		self:GetParent():StopMovingOrSizing()
+	end) --, frameTitle:GetParent().StopMovingOrSizing)
 
 	local fonttitle = frameTitle:CreateFontString(nil, "ARTWORK", "GameFontHighlight");
-		--fonttitle:SetText(ConROC.Classes[classId] .. " Spells");
-		fonttitle:SetText(select(1, GetClassInfo(classId)) .. " Spells");
-		fonttitle:SetPoint('TOP', frameTitle, 'TOP', 0, 0);
+	--fonttitle:SetText(ConROC.Classes[classId] .. " Spells");
+	fonttitle:SetText(select(1, GetClassInfo(classId)) .. " Spells");
+	fonttitle:SetPoint('TOP', frameTitle, 'TOP', 0, 0);
 
 	local otbutton = CreateFrame("Button", 'ConROCSpellmenuFrame_OpenButton', frame);
-		otbutton:SetFrameStrata('MEDIUM');
-		otbutton:SetFrameLevel('6');
-		otbutton:SetPoint("CENTER", frame, "CENTER");
-		otbutton:SetSize(90, 15);
-		otbutton:Show();
-		otbutton:SetAlpha(1);
+	otbutton:SetFrameStrata('MEDIUM');
+	otbutton:SetFrameLevel('6');
+	otbutton:SetPoint("CENTER", frame, "CENTER");
+	otbutton:SetSize(90, 15);
+	otbutton:Show();
+	otbutton:SetAlpha(1);
 
 		--otbutton:SetText(ConROC.Classes[classId] .. " Spells");
 		otbutton:SetText(select(1, GetClassInfo(classId)) .. " Spells");
@@ -789,20 +787,20 @@ function ConROC:SpellmenuFrame()
 		otbutton:SetScript("OnEnter", ConROCTTOnEnter)
 		otbutton:SetScript("OnLeave", ConROCTTOnLeave)
 
-	local ontex = otbutton:CreateTexture();
+		local ontex = otbutton:CreateTexture();
 		ontex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonUp");
 		ontex:SetTexCoord(0, 0.625, 0, 0.6875);
 		ontex:SetVertexColor(Color.r, Color.g, Color.b, 1);
 		ontex:SetAllPoints();
 		otbutton:SetNormalTexture(ontex);
 
-	local ohtex = otbutton:CreateTexture()
+		local ohtex = otbutton:CreateTexture()
 		ohtex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonHighlight")
 		ohtex:SetTexCoord(0, 0.625, 0, 0.6875)
 		ohtex:SetAllPoints()
 		otbutton:SetHighlightTexture(ohtex)
 
-	local optex = otbutton:CreateTexture()
+		local optex = otbutton:CreateTexture()
 		optex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonDown")
 		optex:SetTexCoord(0, 0.625, 0, 0.6875)
 		optex:SetVertexColor(Color.r, Color.g, Color.b, 1)
@@ -840,25 +838,25 @@ function ConROC:SpellmenuFrame()
 		tbutton:SetText("X")
 		tbutton:SetNormalFontObject("GameFontHighlightSmall")
 
-	local ntex = tbutton:CreateTexture()
-		ntex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonUp")
-		ntex:SetTexCoord(0, 0.625, 0, 0.6875)
-		ntex:SetVertexColor(1, .1, .1, 1)
-		ntex:SetAllPoints()
-		tbutton:SetNormalTexture(ntex)
+		local ntex = tbutton:CreateTexture()
+			ntex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonUp")
+			ntex:SetTexCoord(0, 0.625, 0, 0.6875)
+			ntex:SetVertexColor(1, .1, .1, 1)
+			ntex:SetAllPoints()
+			tbutton:SetNormalTexture(ntex)
 
-	local htex = tbutton:CreateTexture()
-		htex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonHighlight")
-		htex:SetTexCoord(0, 0.625, 0, 0.6875)
-		htex:SetAllPoints()
-		tbutton:SetHighlightTexture(htex)
+		local htex = tbutton:CreateTexture()
+			htex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonHighlight")
+			htex:SetTexCoord(0, 0.625, 0, 0.6875)
+			htex:SetAllPoints()
+			tbutton:SetHighlightTexture(htex)
 
-	local ptex = tbutton:CreateTexture()
-		ptex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonDown")
-		ptex:SetTexCoord(0, 0.625, 0, 0.6875)
-		ptex:SetVertexColor(1, .1, .1, 1)
-		ptex:SetAllPoints()
-		tbutton:SetPushedTexture(ptex)
+		local ptex = tbutton:CreateTexture()
+			ptex:SetTexture("Interface\\AddOns\\ConROC\\images\\buttonDown")
+			ptex:SetTexCoord(0, 0.625, 0, 0.6875)
+			ptex:SetVertexColor(1, .1, .1, 1)
+			ptex:SetAllPoints()
+			tbutton:SetPushedTexture(ptex)
 
 		tbutton:SetScript("OnMouseUp", function (self, tbutton, up)
 			self:Hide();

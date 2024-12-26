@@ -953,14 +953,13 @@ function ConROC:OnEnable()
 	self:RegisterEvent('PLAYER_TARGET_CHANGED');
 	self:RegisterEvent('ACTIONBAR_SLOT_CHANGED');
 	self:RegisterEvent('PLAYER_REGEN_DISABLED');
-	self:RegisterEvent('PLAYER_REGEN_ENABLED');	
+	self:RegisterEvent('PLAYER_REGEN_ENABLED');
 	self:RegisterEvent('PLAYER_ENTERING_WORLD');
 	self:RegisterEvent('PLAYER_LEAVING_WORLD');
 	self:RegisterEvent('UPDATE_SHAPESHIFT_FORM');
 	self:RegisterEvent('ACTIONBAR_HIDEGRID');
 	self:RegisterEvent('ACTIONBAR_PAGE_CHANGED');
 	self:RegisterEvent('LEARNED_SPELL_IN_TAB');
-	self:RegisterEvent('SPELLS_CHANGED');
 
 	self:RegisterEvent('CHARACTER_POINTS_CHANGED');
 	self:RegisterEvent('UPDATE_MACROS');
@@ -1013,7 +1012,7 @@ function ConROC:PLAYER_LEAVING_WORLD()
 end
 
 function ConROC:PLAYER_ENTERING_WORLD()
-	C_Timer.After(2, function()
+	C_Timer.After(1, function()
 		self:UpdateButtonGlow();
 		if not self.rotationEnabled then
 			self:Print(self.Colors.Success .. 'Auto enable on login!');
@@ -1066,24 +1065,12 @@ function ConROC:PLAYER_REGEN_DISABLED()
 	end);
 end
 
-function ConROC:SPELLS_CHANGED()
-	if ConROC.SpellsChanged and ConROC.Seasons.IsSoD then
-		--print("Spell Changed", ConROC.Seasons.IsSoD)
-		ConROC:CR_SPELLS_LEARNED()
-	end
-	ConROC.SpellsChanged = true;
-end
-
 function ConROC:LEARNED_SPELL_IN_TAB()
-	--print("Spell learned")
-	if not ConROC.Seasons.IsSoD then
-		ConROC:CR_SPELLS_LEARNED()
-	end
+	ConROC:CR_SPELLS_LEARNED()
 end
 
 function ConROC:CR_SPELLS_LEARNED()
 	C_Timer.After(1, function()
-		ConROC:UpdateSpellID();
 		ConROC:ButtonFetch();
 		C_Timer.After(1, function()
 			ConROC:SpellMenuUpdate(true); -- new spell learned
@@ -1175,6 +1162,12 @@ function ConROC:LoadModule()
 	self:EnableRotationModule();
 	self:EnableDefenseModule();
 	self:Print(self.Colors[classId] .. self.Description);
+
+	if ConROC:currentSpec() then
+		self:Print(self.Colors.Info .. "Current spec:", self.Colors.Success ..  ConROC:currentSpec())
+	else
+		self:Print(self.Colors.Error .. "You do not currently have a spec.")
+	end
 
 	self:Print(self.Colors.Info .. 'Finished Loading class module');
 	self.ModuleLoaded = true;
