@@ -239,20 +239,20 @@ local options = {
 				ConROC.db.profile.unlockWindow = val;
 				ConROCWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 				ConROCDefenseWindow:EnableMouse(ConROC.db.profile.unlockWindow);
-				ConROCInterruptWindow:EnableMouse(ConRO.db.profile.unlockWindow);
+				ConROCInterruptWindow:EnableMouse(ConROC.db.profile.unlockWindow);
 				ConROCPurgeWindow:EnableMouse(ConROC.db.profile.unlockWindow);
-				
+
 				if val == true and ConROC.db.profile.enableInterruptWindow == true then
 					ConROCInterruptWindow:Show();
 				else
 					ConROCInterruptWindow:Hide();
 				end
 				if val == true and ConROC.db.profile.enablePurgeWindow == true then
-					ConROCPurgeWindow:Show();					
+					ConROCPurgeWindow:Show();
 				else
-					ConROCPurgeWindow:Hide();					
+					ConROCPurgeWindow:Hide();
 				end
-	
+
 				if val == true or ConROC.db.profile.enableWindowBackground then
 					ConROCWindow.texture:Show();
 					ConROCDefenseWindow.texture:Show();
@@ -260,26 +260,26 @@ local options = {
 					ConROCWindow.texture:Hide();
 					ConROCDefenseWindow.texture:Hide();
 				end
-				
+
 				if ConROCSpellmenuMover ~= nil then
 					ConROCSpellmenuMover:EnableMouse(ConROC.db.profile.unlockWindow);
 					if val == true then
-						ConROCSpellmenuMover:Show();					
+						ConROCSpellmenuMover:Show();
 					else
-						ConROCSpellmenuMover:Hide();					
+						ConROCSpellmenuMover:Hide();
 					end
 				end
 				if ConROCToggleMover ~= nil and ConROCButtonFrame:IsVisible() then
 					ConROCToggleMover:EnableMouse(ConROC.db.profile.unlockWindow);
 					if val == true then
-						ConROCToggleMover:Show();					
+						ConROCToggleMover:Show();
 					else
-						ConROCToggleMover:Hide();					
+						ConROCToggleMover:Hide();
 					end
 				end
 			end,
 			get = function(info) return ConROC.db.profile.unlockWindow end
-		},		
+		},
 		spacer10 = {
 			order = 10,
 			type = "description",
