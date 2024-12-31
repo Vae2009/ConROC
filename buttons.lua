@@ -2594,7 +2594,7 @@ end
 function ConROC:GlowSpell(spellID)
 	local spellName;
 	local spellRank = "";
-	local spellInfo = GetSpellInfo(spellID);
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
 		spellName = spellInfo and spellInfo.name
 
 	for tab = 1, GetNumSpellTabs() do
@@ -2630,7 +2630,7 @@ end
 function ConROC:GlowDef(spellID)
 	local spellName;
 	local spellRank = "";
-	local spellInfo = GetSpellInfo(spellID);
+	local spellInfo = C_Spell.GetSpellInfo(spellID);
 		spellName = spellInfo and spellInfo.name;
 
 	for tab = 1, GetNumSpellTabs() do

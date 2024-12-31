@@ -1203,7 +1203,6 @@ function ConROC:InvokeNextSpell()
 	local oldSkill = self.Spell;
 
 	local timeShift, currentSpell, gcd = ConROC:EndCast();
-
 	local iterate = self:NextSpell(timeShift, currentSpell, gcd);
 	self.Spell = self.SuggestedSpells[1];
 
