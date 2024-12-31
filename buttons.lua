@@ -391,7 +391,7 @@ function ConROC:DisplayWindowFrame()
 			fontkey:SetTextColor(1, 1, 1, 1);
 			frame.fontkey = fontkey;
 		end
-		if ConROC.db.profile.enableWindowKeybinds or ConROC.db.profile._Unlock_ConROC then
+		if ConROC.db.profile.enableWindowKeybinds then
 			fontkey:Show();
 		else
 			fontkey:Hide();
@@ -467,7 +467,7 @@ function ConROC:DisplayWindowFrame()
 			fontkey2:SetTextColor(1, 1, 1, 1);
 			frame2.fontkey = fontkey2;
 		end
-		if ConROC.db.profile.enableWindowKeybinds or ConRO.db.profile._Unlock_ConROC then
+		if ConROC.db.profile.enableWindowKeybinds then
 			fontkey2:Show();
 		else
 			fontkey2:Hide();
@@ -509,7 +509,7 @@ function ConROC:DisplayWindowFrame()
 			fontkey3:SetTextColor(1, 1, 1, 1);
 			frame3.fontkey = fontkey3;
 		end
-		if ConROC.db.profile.enableWindowKeybinds or ConROC.db.profile._Unlock_ConRO then
+		if ConROC.db.profile.enableWindowKeybinds then
 			fontkey3:Show();
 		else
 			fontkey3:Hide();
@@ -585,7 +585,7 @@ function ConROC:DefenseWindowFrame()
 			fontkey:SetTextColor(1, 1, 1, 1);
 			frame.fontkey = fontkey;
 		end
-		if ConROC.db.profile.enableWindowKeybinds or ConROC.db.profile._Unlock_ConROC then
+		if ConROC.db.profile.enableWindowKeybinds then
 			fontkey:Show();
 		else
 			fontkey:Hide();
