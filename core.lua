@@ -1028,6 +1028,7 @@ function ConROC:OnEnable()
 	self:RegisterEvent('ACTIONBAR_HIDEGRID');
 	self:RegisterEvent('ACTIONBAR_PAGE_CHANGED');
 	self:RegisterEvent('LEARNED_SPELL_IN_TAB');
+	self:RegisterEvent('PLAYER_LEVEL_UP');
 	self:RegisterEvent('ENGRAVING_MODE_CHANGED');
 	self:RegisterEvent('LOADING_SCREEN_ENABLED');
 	self:RegisterEvent('LOADING_SCREEN_DISABLED');
@@ -1144,6 +1145,10 @@ function ConROC:PLAYER_REGEN_DISABLED()
 			self:EnableDefense();
 		end
 	end);
+end
+
+function ConROC:PLAYER_LEVEL_UP()
+	ConROC:CR_SPELLS_LEARNED()
 end
 
 function ConROC:LEARNED_SPELL_IN_TAB()

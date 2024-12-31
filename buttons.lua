@@ -2591,11 +2591,25 @@ function ConROC:AbilityMovement(_Spell, _Condition)
 	end
 end
 
+local swapSpells = {
+	Toast = 26008,
+}
+
+ConROCSwapSpells = ConROCSwapSpells or swapSpells;
+
 function ConROC:GlowSpell(spellID)
 	local spellName;
 	local spellRank = "";
 	local spellInfo = C_Spell.GetSpellInfo(spellID);
 		spellName = spellInfo and spellInfo.name
+	local _IsSwapSpell = false;
+
+	for k, swapSpellID in pairs(ConROCSwapSpells) do
+		if spellID == swapSpellID then
+			_IsSwapSpell = true;
+			break;
+		end
+	end
 
 	for tab = 1, GetNumSpellTabs() do
 		local _, _, tabOffset, numEntries = GetSpellTabInfo(tab);
@@ -2613,7 +2627,7 @@ function ConROC:GlowSpell(spellID)
 		end
 		self.SpellsGlowing[spellID] = 1;
 	else
-		if UnitAffectingCombat('player') then
+		if UnitAffectingCombat('player') and not _IsSwapSpell then
 			if spellName ~= nil then
 				self:Print(self.Colors.Error .. 'Spell not found on action bars: ' .. ' ' .. spellName .. ' ' .. spellRank .. ' ' .. '(' .. spellID .. ')' .. ' Check your spellbook.');
 			else

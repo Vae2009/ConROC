@@ -27,7 +27,8 @@ function ConROC:currentSpec()
         end
         if pointsSpent > maxPoints then
             maxPoints = pointsSpent;
-            currentSpecID, currentSpecName = GetTalentTabInfo(tab);
+            _, currentSpecName = GetTalentTabInfo(tab);
+			currentSpecID = tab;
         end
     end
 	return currentSpecName, currentSpecID;
