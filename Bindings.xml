@@ -1,24 +1,24 @@
 <Bindings>
 	<Binding name="CONROCUNLOCK" header="ConROC">
-		if not ConROC.db.profile.unlockWindow then
-			ConROC.db.profile.unlockWindow = true;
+		if not ConROC.db.profile._Unlock_ConROC then
+			ConROC.db.profile._Unlock_ConROC = true;
 		else
-			ConROC.db.profile.unlockWindow = false;
+			ConROC.db.profile._Unlock_ConROC = false;
 		end
 		
-		ConROCWindow:EnableMouse(ConROC.db.profile.unlockWindow);
-		ConROCDefenseWindow:EnableMouse(ConROC.db.profile.unlockWindow);
-		ConROCInterruptWindow:EnableMouse(ConROC.db.profile.unlockWindow);
-		ConROCPurgeWindow:EnableMouse(ConROC.db.profile.unlockWindow);
-		ConROCDefenseWindow:SetMovable(ConROC.db.profile.unlockWindow);
-		ConROCInterruptWindow:SetMovable(ConROC.db.profile.unlockWindow);
-		ConROCPurgeWindow:SetMovable(ConROC.db.profile.unlockWindow);
-		if ConROC.db.profile.unlockWindow and ConROC.db.profile.enableInterruptWindow == true then
+		ConROCWindow:EnableMouse(ConROC.db.profile._Unlock_ConROC);
+		ConROCDefenseWindow:EnableMouse(ConROC.db.profile._Unlock_ConROC);
+		ConROCInterruptWindow:EnableMouse(ConROC.db.profile._Unlock_ConROC);
+		ConROCPurgeWindow:EnableMouse(ConROC.db.profile._Unlock_ConROC);
+		ConROCDefenseWindow:SetMovable(ConROC.db.profile._Unlock_ConROC);
+		ConROCInterruptWindow:SetMovable(ConROC.db.profile._Unlock_ConROC);
+		ConROCPurgeWindow:SetMovable(ConROC.db.profile._Unlock_ConROC);
+		if ConROC.db.profile._Unlock_ConROC and ConROC.db.profile.enableInterruptWindow == true then
 			ConROCInterruptWindow:Show();				
 		else
 			ConROCInterruptWindow:Hide();				
 		end	
-		if ConROC.db.profile.unlockWindow and ConROC.db.profile.enablePurgeWindow == true then
+		if ConROC.db.profile._Unlock_ConROC and ConROC.db.profile.enablePurgeWindow == true then
 			ConROCPurgeWindow:Show();					
 		else
 			ConROCPurgeWindow:Hide();					

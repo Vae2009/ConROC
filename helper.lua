@@ -1006,11 +1006,12 @@ end
 
     return false
 end]]
+
 function ConROC:Interrupt()				--Classic Broke
 	if UnitCanAttack ('player', 'target') then
 		local tarchan, _, _, _, _, _, cnotInterruptible = UnitChannelInfo("target");
 		local tarcast, _, _, _, _, _, _, notInterruptible = UnitCastingInfo("target");
-		
+
 		if tarcast and not notInterruptible then
 			return true;
 		elseif tarchan and not cnotInterruptible then
