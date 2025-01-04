@@ -1055,7 +1055,7 @@ function ConROC:Equipped(itemType, slotName)
 	local itemID = GetInventoryItemID("player", slotID);
 	if itemID ~= nil then
 		local wpn, subType, _, _, _, _, typeID, subclassID = select(6,GetItemInfo(itemID));
-		
+
 		if itemType == "wpn" then
 			--print("wpn", wpn, "typeID", typeID)
 			if typeID == 2 then
@@ -1077,24 +1077,22 @@ function ConROC:Equipped(itemType, slotName)
 		return false;
 	end
 end
---[[function ConROC:TierPieces(tier, bonus) --function to check for Tire Piece bonuses
-  local pieceCount = 0
-  for i = 1, 19 do
-        local item = GetInventoryItemID("player", i)
-        if item  then
-            local itemName, itemLink, _, _, _, _, _, _, _, _, _, _, _, _, _, itemDesc = GetItemInfo(item)
-            if itemDesc and string.find(itemName, tier) then
-                pieceCount = pieceCount + 1
-            
-            end
-        end
-    end
-  if pieceCount >= 2 then
-    return true, pieceCount, tier
-  else 
-    return false
-  end
-end--]]
+
+function ConROC:TierPieces(tier) --function to check for Tier Piece bonuses
+	local pieceCount = 0
+	for i = 1, 19 do
+		local item = GetInventoryItemID("player", i)
+		if item then
+			local _Item_Info = select(16,GetItemInfo(item));
+			if _Item_Info == tier then
+				pieceCount = pieceCount + 1;
+			end
+		end
+		if pieceCount >= 6 then break; end
+	end
+
+    return pieceCount;
+end
 
 function ConROC:IsGlyphActive(glyphSpellID)
     for i = 1, 6 do
