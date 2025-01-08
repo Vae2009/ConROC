@@ -3,7 +3,7 @@ local lsm = LibStub('AceGUISharedMediaWidgets-1.0');
 local media = LibStub('LibSharedMedia-3.0');
 local ADDON_NAME, ADDON_TABLE = ...;
 local version = GetAddOnMetadata(ADDON_NAME, "Version");
-local addoninfo = 'Main: Ver ' .. version;
+local addoninfo = 'Main Version: ' .. version;
 
 BINDING_HEADER_ConROC = "ConROC Hotkeys"
 BINDING_NAME_CONROCUNLOCK = "Lock/Unlock ConROC"
@@ -460,7 +460,7 @@ local options = {
 			type = 'header',
 			name = 'Toggle Button Settings',
 			order = 31,
-		},		
+		},
 		toggleButtonSize = {
 			name = 'Toggle Button Size',
 			desc = 'Sets the scale of the toggle buttons.',

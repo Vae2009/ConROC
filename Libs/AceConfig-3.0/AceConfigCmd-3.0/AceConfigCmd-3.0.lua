@@ -178,7 +178,6 @@ local function iterateargs(tab)
 					argtab=tab.args
 				end
 			end
----@diagnostic disable-next-line: missing-return
 		end
 	end
 end

@@ -1,13 +1,14 @@
---[[-----------------------------------------------------------------------------
-MultiLineEditBox Widget (Modified to add Syntax highlighting from FAIAP)
--------------------------------------------------------------------------------]]
-local Type, Version = "MultiLineEditBox-ElvUI", 31
+local Type, Version = "MultiLineEditBox", 33
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
-local _G, pairs = _G, pairs
-local GetCursorInfo, GetSpellInfo, ClearCursor = GetCursorInfo, GetSpellInfo, ClearCursor
+-- Lua APIs
+local pairs = pairs
+
+-- WoW APIs
+local GetCursorInfo, ClearCursor = GetCursorInfo, ClearCursor
 local CreateFrame, UIParent = CreateFrame, UIParent
+local _G = _G
 
 --[[-----------------------------------------------------------------------------
 Support functions
@@ -53,7 +54,7 @@ Scripts
 local function OnClick(self)                                                     -- Button
 	self = self.obj
 	self.editBox:ClearFocus()
-	if not self:Fire("OnEnterPressed", self.editBox:GetText(true)) then -- ElvUI changed
+	if not self:Fire("OnEnterPressed", self.editBox:GetText()) then
 		self.button:Disable()
 	end
 end
@@ -99,9 +100,13 @@ local function OnMouseUp(self)                                                  
 end
 
 local function OnReceiveDrag(self)                                               -- EditBox / ScrollFrame
-	local type, id, info = GetCursorInfo()
+	local type, id, info, extra = GetCursorInfo()
 	if type == "spell" then
-		info = GetSpellInfo(id, info)
+		if C_Spell and C_Spell.GetSpellName then
+			info = C_Spell.GetSpellName(extra)
+		else
+			info = GetSpellInfo(id, info)
+		end
 	elseif type ~= "item" then
 		return
 	end
@@ -123,14 +128,8 @@ end
 local function OnTextChanged(self, userInput)                                    -- EditBox
 	if userInput then
 		self = self.obj
-
-		local value = self.editBox:GetText()
-		self:Fire("OnTextChanged", value)
+		self:Fire("OnTextChanged", self.editBox:GetText())
 		self.button:Enable()
-
-		if self.textChanged then
-			self.textChanged(value)
-		end
 	end
 end
 
@@ -266,16 +265,6 @@ local methods = {
 	["SetCursorPosition"] = function(self, ...)
 		return self.editBox:SetCursorPosition(...)
 	end,
-
-	-- ElvUI block, this it to support plugins that use FAIAP
-	["SetSyntaxHighlightingEnabled"] = function(self, enabled)
-		if enabled then
-			AceGUI.luaSyntax.enable(self.editBox, nil, 4)
-		else
-			AceGUI.luaSyntax.disable(self.editBox)
-		end
-	end
-	-- End ElvUI block
 }
 
 --[[-----------------------------------------------------------------------------
@@ -357,6 +346,7 @@ local function Constructor()
 	editBox:SetScript("OnTextChanged", OnTextChanged)
 	editBox:SetScript("OnTextSet", OnTextSet)
 	editBox:SetScript("OnEditFocusGained", OnEditFocusGained)
+
 
 	scrollFrame:SetScrollChild(editBox)
 
