@@ -224,6 +224,30 @@ function ConROC:Targets(spellID)
 					end
 				end
 			end
+		elseif spellID == "25" then
+			if UnitReaction("player", "target") ~= nil then
+				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
+					_, maxRange = ConROC.rc:getRange("target");
+					if maxRange then
+						if tonumber(maxRange) <= 25 then
+							target_in_range = true;
+						end
+					end
+				end
+			end
+
+			for i = 1, 15 do
+				if UnitReaction("player", 'nameplate' .. i) ~= nil then
+					if UnitReaction("player", 'nameplate' .. i) <= 4 and UnitExists('nameplate' .. i) and UnitAffectingCombat('nameplate' .. i) then
+						_, maxRange = ConROC.rc:getRange('nameplate' .. i);
+						if maxRange then
+							if tonumber(maxRange) <= 25 then
+								number_in_range = number_in_range + 1
+							end
+						end
+					end
+				end
+			end
 		elseif spellID == "30" then
 			if UnitReaction("player", "target") ~= nil then
 				if UnitReaction("player", "target") <= 4 and UnitExists("target") then
@@ -842,10 +866,14 @@ function ConROC:AbilityReady(spellid, timeShift, spelltype)
 		if spelltype == 'pet' then
 			known = IsSpellKnown(spellid, true);
 		end
-		if known and usable and _CD <= 0 and not notEnough then
-			rdy = true;
+		if spelltype == 'known' then
+			if known and _CD <= 0 then
+				rdy = true;
+			end
 		else
-			rdy = false;
+			if known and usable and _CD <= 0 and not notEnough then
+				rdy = true;
+			end
 		end
 		if castTimeMilli ~= nil then
 			castTime = castTimeMilli/1000;
@@ -879,13 +907,11 @@ function ConROC:Raidmob()
 	local tlvl = UnitLevel("target")
 	local plvl = UnitLevel("player")
 	local strong = false
-	
 		if classification == "worldboss" or classification == "rareelite" or classification == "elite" then
 			strong = true;
 		elseif tlvl == -1 or tlvl > plvl + 2 then
 			strong = true;
 		end
-		
 	return strong
 end
 
