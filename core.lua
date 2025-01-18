@@ -1148,7 +1148,9 @@ function ConROC:PLAYER_REGEN_DISABLED()
 end
 
 function ConROC:PLAYER_LEVEL_UP()
-	ConROC:CR_SPELLS_LEARNED()
+	C_Timer.After(1, function()
+		ConROC:CR_SPELLS_LEARNED()
+	end);
 end
 
 function ConROC:LEARNED_SPELL_IN_TAB()
