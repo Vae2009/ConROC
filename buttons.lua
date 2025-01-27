@@ -2593,6 +2593,8 @@ end
 
 local swapSpells = {
 	Toast = 26008,
+	AutoAttack = 6603,
+	AutoShot = 75,
 }
 
 ConROCSwapSpells = ConROCSwapSpells or swapSpells;
