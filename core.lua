@@ -517,10 +517,16 @@ local options = {
 			order = 42,
 			set = function(info, val)
 				ConROC.db.profile.enableWindow = val;
-				if val == true and not ConROC:HealSpec() then
+				if val == true then
 					ConROCWindow:Show();
+					if ConROC.db.profile.enableNextWindow then
+						ConROCWindow2:Show();
+						ConROCWindow3:Show();
+					end
 				else
 					ConROCWindow:Hide();
+					ConROCWindow2:Hide();
+					ConROCWindow3:Hide();
 				end
 			end,
 			get = function(info) return ConROC.db.profile.enableWindow end
@@ -535,10 +541,18 @@ local options = {
 				ConROC.db.profile.combatWindow = val;
 				if val == true then
 					ConROCWindow:Hide();
+					ConROCWindow2:Hide();
+					ConROCWindow3:Hide();
 					ConROCDefenseWindow:Hide();
 				else
 					ConROCWindow:Show();
-					ConROCDefenseWindow:Show();
+					if ConROC.db.profile.enableNextWindow then
+						ConROCWindow2:Show();
+						ConROCWindow3:Show();
+					end
+					if ConROC.db.profile.enableDefenseWindow then
+						ConROCDefenseWindow:Show();
+					end
 				end
 			end,
 			get = function(info) return ConROC.db.profile.combatWindow end
@@ -562,7 +576,7 @@ local options = {
 			order = 45,
 			set = function(info, val)
 				ConROC.db.profile.enableNextWindow = val;
-				if val == true and not ConROC:HealSpec() then
+				if val == true then
 					ConROCWindow2:Show();
 					ConROCWindow3:Show();
 				else
@@ -717,7 +731,7 @@ local options = {
 					ConROCDefenseWindow:Show();
 				else
 					ConROCDefenseWindow:Hide();
-				end				
+				end
 			end,
 			get = function(info) return ConROC.db.profile.enableDefenseWindow end
 		},
@@ -1109,6 +1123,24 @@ end
 
 function ConROC:PLAYER_TARGET_CHANGED()
 	if self.rotationEnabled then
+		if ConROC.db.profile.enableWindow then
+			if (ConROC.db.profile.combatWindow or ConROC:CheckBox(ConROC_SM_Role_Healer)) and not ConROC:TarHostile() then
+				ConROCWindow:Hide();
+				ConROCWindow2:Hide();
+				ConROCWindow3:Hide();
+			else
+				ConROCWindow:Show();
+				if ConROC.db.profile.enableNextWindow then
+					ConROCWindow2:Show();
+					ConROCWindow3:Show();
+				end
+			end
+		else
+			ConROCWindow:Hide();
+			ConROCWindow2:Hide();
+			ConROCWindow3:Hide();
+		end
+
 		if (UnitIsFriend('player', 'target')) then
 			return;
 		else
@@ -1117,22 +1149,6 @@ function ConROC:PLAYER_TARGET_CHANGED()
 			self:InvokeNextSpell();
 			self:InvokeNextDef();
 		end
-	end
-
-	if ConROC.db.profile.enableWindow and (ConROC.db.profile.combatWindow or ConROC:CheckBox(ConROC_SM_Role_Healer)) and ConROC:TarHostile() then
-		ConROCWindow:Show();
-	elseif ConROC.db.profile.enableWindow and not (ConROC.db.profile.combatWindow or ConROC:CheckBox(ConROC_SM_Role_Healer)) then
-		ConROCWindow:Show();
-	else
-		ConROCWindow:Hide();
-	end
-
-	if ConROC.db.profile.enableDefenseWindow and ConROC.db.profile.combatWindow and ConROC:TarHostile() then
-		ConROCDefenseWindow:Show();
-	elseif ConROC.db.profile.enableDefenseWindow and not ConROC.db.profile.combatWindow then
-		ConROCDefenseWindow:Show();
-	else
-		ConROCDefenseWindow:Hide();
 	end
 end
 
